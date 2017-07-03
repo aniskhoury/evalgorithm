@@ -1,5 +1,6 @@
 from structure.virtualmachine import *
 from config.evaconfig import *
+
 class EVA:
     virtualMachines = []
     config = None

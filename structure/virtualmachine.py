@@ -1,4 +1,6 @@
+import logging
 class VirtualMachine:
+    global debug
     memory = None
     algorithm = None
     pc = None #program counter
@@ -6,7 +8,7 @@ class VirtualMachine:
         if memory == None:
             self.setMemory(list())
         if algorithm == None:
-            self.setPc()
+            self.setPc(None)
 
     def setMemory(self,m):
         self.memory = m
@@ -14,14 +16,17 @@ class VirtualMachine:
         pc = self.getPc()
         if pc != None:
             pc = pc +1
-            if pc > -1 and pc <= len()
+            if pc > -1 and pc < len(self.getAlgorithm()):
+                self.setPc(pc)
+                return self.getAlgorithm()[pc]
+        logging.error("PC None in getNextInstruction(self)")
         return False
     def runAlgorithm(self):
         algorithm = self.getAlgorithm()
         if algorithm == None:
             return False
-
-
+        self.setPc(-1)
+        instruction = self.getNextInstruction()
         return True
 
     def loadAlgorithm(self,a):
