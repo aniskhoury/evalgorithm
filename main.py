@@ -1,4 +1,5 @@
 from EVA import *
+from structure.io import *
 import logging
 
 def myFitness(mem, output, simulOutput, simResult):
@@ -10,11 +11,10 @@ logFile = "log.txt"
 logging.basicConfig(filename=logFile, level=logging.INFO)
 
 io = IO()
-io.input([DadaTest0, DadaTest1, DadaTest2, DadaTest3....])
-io.output([OutputEsperat0, OutputEsperat1, OutputEsperat2...])
-io.result(0)
-configuration = EVAconfig(io, numGeneration=2000, numVirtualMachines=1, typeCross=0, population=100....)
+io.addTest([5, 10, 15, 20],"15",15)
+io.addTest([4,9,14,19],"14",14)
+configuration = EVAconfig(io, numGenerations=2000, numVirtualMachines=1, typeCross=0, population=100)
 simulation = EVA(configuration, fnFitness=myFitness)
-simulation.init()  # Optatiu simulation.init(Population=la_poblacio_dessitjada_per_repetir_experiment)
+#simulation.init()  # Optatiu simulation.init(Population=la_poblacio_dessitjada_per_repetir_experiment)
 simulation.run()
 simulation.showResults()

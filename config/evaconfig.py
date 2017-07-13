@@ -1,5 +1,5 @@
 numVirtualMachines = None
-maxNumGenerations = 500
+numGenerations = 500
 typeCross = 0
 typeSelect = 0
 numBitsInstruction = 32
@@ -11,24 +11,38 @@ class EVAconfig:
     typeCross = 0
     typeSelect = 0
     numBitsInstruction = 32
-
-    def __init__(self,numVirtualMachines = 1,maxNumGeneration = 500):
-        self.initConfig()
-
+    population = 100
+    def __init__(self,io,numGenerations=800, numVirtualMachines=1, typeCross=0, population=100):
+        self.setNumGenerations(numGenerations)
+        self.setNumVirtualMachines(numVirtualMachines)
+        self.setTypeCross(typeCross)
+        self.setPopulation(population)
+        self.initGlobalConfig()
+    def setNumGenerations(self,n):
+        self.numGenerations = n
+    def setNumVirtualMachines(self,n):
+        self.numVirtualMachines = n
+    def setTypeCross(self,n):
+        self.typeCross = n
+    def setPopulation(self,n):
+        self.population = n
     def getNumBitsInstruction(self):
         return self.numBitsInstruction
     def getTypeSelect(self):
         return self.typeSelect
     def getTypeCross(self):
         return self.typeCross
-    def getMaxNumGenerations(self):
-        return self.maxNumGeneration
+    def getNumGenerations(self):
+        return self.numGenerations
     def getNumVirtualMachines(self):
         return self.numVirtualMachines
+    def getPopulation(self):
+        return self.population
     def initGlobalConfig(self):
-        global numBitsInstruction, typeCross, typeSelect, maxNumGenerations, numVirtualMachines
+        global numBitsInstruction, typeCross, typeSelect, numGenerations, numVirtualMachines,population
         numBitsInstruction = self.getNumBitsInstruction()
         typeCross = self.getTypeCross()
         typeSelect = self.getTypeSelect()
-        maxNumGenerations = self.getMaxNumGenerations()
+        numGeneration = self.getNumGenerations()
         numVirtualMachines = self.getNumVirtualMachines()
+        population = self.getPopulation()

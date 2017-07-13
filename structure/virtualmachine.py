@@ -37,6 +37,6 @@ class VirtualMachine:
         if len(self.getAlgorithm()) == 0 or pc == None or pc < 0 or pc >= len(self.getAlgorithm()):
             self.pc = None
         else:
-            self.pc =
+            self.pc = pc
     def getPc(self):
         return self.pc
