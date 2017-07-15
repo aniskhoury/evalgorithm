@@ -1,8 +1,11 @@
+from EVA import *
 class IO:
     input = []
     output = []
     result = []
     def __init__(self,input=[],output=[],result=[]):
+        global DEBUG
+        print("Debug",DEBUG)
         self.setInput(input)
         self.setOutput(output)
         self.setResult(result)

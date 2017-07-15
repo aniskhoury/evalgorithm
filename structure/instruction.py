@@ -2,12 +2,20 @@ import logging
 import random
 class Instruction:
     code = None
-    cursor = None
-    def __init__(self,code = None):
-        self.setCode(code)
-        logging.info("Codi",self.getCode())
+    cursor = 0
+
+    def __init__(self,code = None,evaconfig=None):
+        if code==None:
+            if evaconfig != None:
+                self.generateRandomCode(evaconfig.getNumBitsInstruction())
+            else:
+                self.generateRandomCode(32)
+        else:
+            self.setCode(code)
+        #logging.info("Codi",self.getCode())
         if code != None:
             self.setCursor(0)
+
     def generateRandomCode(self,bits=None):
         numBits = bits
         result = ""
@@ -19,10 +27,7 @@ class Instruction:
         self.setCode(result)
     def setCode(self,c):
         #random code
-        if c == None:
-            self.generateRandomCode()
-        else:
-            self.code = c
+        self.code = c
     def readNextBits(self,numBits=1):
         cursor = self.getCursor()
 
@@ -50,6 +55,8 @@ class Instruction:
     def showInfo(self):
         saveCursor = self.getCursor()
         self.setCursor(0)
+        #code show info HERE
+        print("Code: ",self.getCode())
         self.setCursor(saveCursor)
 
 #example uses

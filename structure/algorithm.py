@@ -1,12 +1,20 @@
+from structure.instruction import *
 class Algorithm:
-    instructions = None
+    instructions = []
     def __init__(self,instructions=None):
-            self.initInstructions(instructions)
-    def initInstructions(self,i=None):
-        if i == None:
-            self.instructions = list()
+        if instructions != None:
+            self.setInstructions(instructions)
         else:
-            self.instructions = i
+            self.setInstructions([])
+            #number of instructions per default
+            self.generateRandomAlgorithm(3)
+
+    def setInstructions(self,i):
+        self.instructions = i
+
+    def generateRandomAlgorithm(self,numInstructions):
+        for i in range(numInstructions):
+            self.instructions.append(Instruction())
     def getInstructions(self):
         return self.instructions
     def numInstructions(self):

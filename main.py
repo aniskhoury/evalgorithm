@@ -1,3 +1,5 @@
+DEBUG = True
+
 from EVA import *
 from structure.io import *
 import logging
