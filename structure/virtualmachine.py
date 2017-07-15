@@ -4,6 +4,9 @@ class VirtualMachine:
     memory = None
     algorithm = None
     pc = None #program counter
+    result = 0
+    output = ""
+
     def __init__(self,memory=1024,algorithm = None,pc = None):
         if memory == None:
             self.setMemory(list())
@@ -40,3 +43,13 @@ class VirtualMachine:
             self.pc = pc
     def getPc(self):
         return self.pc
+
+    
+    def setOutput(self,output):
+        self.output = output
+    def setResult(self,r):
+        self.result = r
+    def getResult(self):
+        return self.result
+    def getOutput(self):
+        return self.output
