@@ -14,6 +14,10 @@ class VirtualMachine:
         self.codeFunction["00001"] = self.subInmFunction
         self.codeFunction["00010"] = self.mulInmFunction
         self.codeFunction["00011"] = self.divInmFunction
+        self.codeFunction["00100"] = self.addArgFunction
+        self.codeFunction["00101"] = self.subArgFunction
+        self.codeFunction["00110"] = self.mulArgFunction
+        self.codeFunction["00111"] = self.divArgFunction
 
     def __init__(self,memory=1024,algorithm = None,pc = None):
 
@@ -49,22 +53,21 @@ class VirtualMachine:
         while instruction != False:
             #instruction.showInfo()
             #instruction.showInfo()
-            self.computeInstruction(instruction)
+            if self.computeInstruction(instruction,input) == False:
+                return False
             instruction = self.getNextInstruction()
 
         return True
-    def computeInstruction(self,instruction):
+    def computeInstruction(self,instruction,input):
         numBitsCode = 5
         instruction.resetCursor()
         code = instruction.readNextBits(numBitsCode)
         #check code of instruction and compute it
         #store result of compute instruction in ret
+        ret = False
         if self.codeFunction.__contains__(code):
-            ret = self.codeFunction[code](instruction)
-
-            if ret == False:
-                return False
-        return True
+            ret = self.codeFunction[code](instruction,input)
+        return ret
 
     def loadAlgorithm(self,a):
         self.algorithm = a
@@ -98,37 +101,71 @@ class VirtualMachine:
         return int(s,2)*1.0
     def decToBin(self,s):
         return bin(s)[2:]
-    def readInmediateInsArgs(self,instruction):
-        sign = instruction.readNextBits()
-        #32 bits - 5 code - 1 sign = 26 bits number
-        number = instruction.readNextBits(26)
-
-        number = self.binToDec(number)*1.0
-        if sign == 0:
-            number = number *-1
+    def readArgumentsInm(self,instruction,input):
+        num = int(self.binToDec(instruction.readNextBits(27)))
+        if num < len(input):
+            return input[num]
+        else:
+            return False
+    def readInmediateInmArgs(self,instruction,input):
+        #32 bits - 5 code - 27
+        instruction.showInfo()
+        number = instruction.readNextBits(27)
+        number = int(self.binToDec(number))
         return number
-    def addInmFunction(self,instruction):
+    def addInmFunction(self,instruction,input):
         res = self.getResult()
-        number = self.readInmediateInsArgs(instruction)
+        number = self.readInmediateInmArgs(instruction,input)
         self.setResult(res+number)
         return True
-    def subInmFunction(self,instruction):
+    def subInmFunction(self,instruction,input):
         res = self.getResult()
-        number = self.readInmediateInsArgs(instruction)
+        number = self.readInmediateInmArgs(instruction,input)
         self.setResult(res-number)
         return True
-    def mulInmFunction(self,instruction):
+    def mulInmFunction(self,instruction,input):
         res = self.getResult()
-        number = self.readInmediateInsArgs(instruction)
+        number = self.readInmediateInmArgs(instruction,input)
         self.setResult(res*number)
         return True
-    def divInmFunction(self,instruction):
+    def divInmFunction(self,instruction,input):
         res = self.getResult()
-        number = self.readInmediateInsArgs(instruction)
+        number = self.readInmediateInmArgs(instruction,input)
         if number == 0:
             return False
         self.setResult(res / number)
         return True
 
+    def addArgFunction(self,instruction,input):
+        res = self.getResult()
+        num = self.readArgumentsInm(instruction,input)
 
+        if num == False:
+            return False
 
+        self.setResult(res+num)
+
+        return True
+    def subArgFunction(self,instruction,input):
+        res = self.getResult()
+        num = self.readArgumentsInm(instruction,input)
+        if num == False:
+            return False
+        self.setResult(res-num)
+        return True
+    def mulArgFunction(self,instruction,input):
+        res = self.getResult()
+        num = self.readArgumentsInm(instruction,input)
+        if num == False:
+            return False
+        self.setResult(res*num)
+        return True
+    def divArgFunction(self,instruction,input):
+        res = self.getResult()
+        num = self.readArgumentsInm(instruction,input)
+        if num == False:
+            return False
+        if input[num] == 0:
+            return False
+        self.setResult(res/num)
+        return True

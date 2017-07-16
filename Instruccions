@@ -1,19 +1,29 @@
 Instructions:
 00000 suma inmediat a result
-ADDi (4) signe (1) num (27)
+ADDi (5) signe (1) num (27)
 signe -> bool, 1-> positiu, 0-> negatiu
 
 00001 resta inmediat a result
-SUBi (4) signe (1) num (27)
+SUBi (5) signe (1) num (27)
 signe -> bool, 1-> positiu, 0-> negatiu
 
 00010 multiplica inmediat a result
-MULi (4) signe (1) num (27)
+MULi (5) signe (1) num (27)
 signe -> bool, 1-> positiu, 0-> negatiu
 
 00011 divideix inmediat a result
-DIVi (4) signe (1) num (27)
+DIVi (5) signe (1) num (27)
 signe -> bool, 1-> positiu, 0-> negatiu
 Error quan num = 0
 
+00100 suma arg
+ADDarg (5) num (28)
 
+00101 resta arg
+SUBarg (5) num (28)
+
+00110 multiplicacio arg
+MULarg (5) num (28)
+
+00111 divisio arg
+DIVarg (5) num (28)

@@ -24,17 +24,20 @@ logging.basicConfig(filename=logFile, level=logging.INFO)
 #addi 4
 i = []
 a = Instruction()
-a.generateCode("ADDi 42")
+a.generateCode("ADDarg 0")
 i.append(a)
+a.showInfo()
 b = Instruction()
 
-b.generateCode("SUBi 2")
+b.generateCode("ADDarg 1")
 i.append(b)
-
+b.showInfo()
 al = Algorithm(instructions = i)
 virtualMach = VirtualMachine(memory=512)
 virtualMach.loadAlgorithm(al)
-virtualMach.runAlgorithm([5, 10, 15, 20])
-print(virtualMach.getResult())
+if virtualMach.runAlgorithm([5, 10, 15, 20]) == False:
+    print("Error algorithm")
+else:
+    print(virtualMach.getResult())
 
 
