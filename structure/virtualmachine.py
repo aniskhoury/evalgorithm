@@ -47,6 +47,8 @@ class VirtualMachine:
         return False
 
     def runAlgorithm(self,input):
+        self.resetTest()
+        self.setPc(-1)
         pc = self.getPc()
         #load and process all instructions of algorithm
         instruction = self.getNextInstruction()
@@ -74,6 +76,9 @@ class VirtualMachine:
         self.setPc(-1)
     def getAlgorithm(self):
         return self.algorithm
+    def resetRun(self):
+        self.setPc(-1)
+        self.setResult(0)
     def setPc(self,pc):
         if self.getAlgorithm() != None:
             if len(self.getAlgorithm().getInstructions()) == 0 or pc == None or pc < 0 or pc >= len(self.getAlgorithm().getInstructions()):

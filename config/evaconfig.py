@@ -12,6 +12,7 @@ class EVAconfig:
     typeSelect = 0
     numBitsInstruction = 32
     population = 100
+    io = None
     def __init__(self,io,numGenerations=800, numVirtualMachines=1, typeCross=0, population=100):
         self.setNumGenerations(numGenerations)
         self.setNumVirtualMachines(numVirtualMachines)

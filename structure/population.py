@@ -16,13 +16,22 @@ class Population:
         self.population = s
     def getElements(self):
         return self.population
+
     def putScore(self,index,score):
-        self.getPopulation()[index]
-    def createPopulation(self,config):
+        self.getPopulation()[index] = score
+    def addElementPopu(self,e):
+        self.getPopulation().append(e)
+    def resetPopulation(self):
         self.setPopulation([])
-        for i in range(config.getPopulation()):
-            self.population.append(elementPopulation(Algorithm()))
-    def showPopulation(self):
+    def createPopulation(self,config):
+        self.resetPopulation()
+        #create random algorithm
+
+        for i in range((config.getPopulation())):
+            self.getPopulation().append(elementPopulation(Algorithm()))
+    def getElements(self):
+        return self.getPopulation()
+    def showAll(self):
         for i in self.getPopulation():
             i.showElement()
     def countPopulation(self):

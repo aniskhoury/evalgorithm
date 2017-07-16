@@ -1,6 +1,8 @@
 from structure.virtualmachine import *
 from config.evaconfig import *
 from structure.population import *
+import math
+
 DEBUG = True
 class EVA:
     virtualMachines = []
@@ -10,14 +12,16 @@ class EVA:
     fnFitness = None
     fnCross = None
 
-    def __init__(self,config,virtualMachines=None,fnFitness=None,fnCross=None):
+    def __init__(self,config,virtualMachines=None,fnFitness=None,fnCross=None,population=None):
         self.setConfig(config)
         self.createVirtualMachine(n=1)
         self.welcomeMessage()
-        self.population = Population()
-        self.population.createPopulation(config)
+        if population == None:
+            self.population = Population()
+            self.population.createPopulation(config)
+        else:
+            self.setPopulation(population)
         #self.population.showPopulation()
-        print("Population num.",self.population.countPopulation())
 
         if fnFitness == None:
             self.fnFitness = self.funcFitness()
@@ -27,15 +31,20 @@ class EVA:
             self.fnCross = self.funcCross()
         else:
             self.fnCross = fnCross
+    def getPopulation(self):
+        return self.population
+    def setPopulation(self,s):
+        self.population = s
     def setConfig(self,c):
         self.config = c
     #n -> Number of virtual machines created.
     def funcCross(self):
         return 0
-    def funcFitness(self):
+    def funcFitness(self,mem, output, result,simulOutput, simResult):
         score = 0
         # fer la comprovació desitjada
-        return 1 / (1 + (score))
+        diffSqrt = math.sqrt(simResult ** 2 - result ** 2) ** 2
+        return 1 / (1 + diffSqrt)
     def createVirtualMachine(self,n=1):
         self.virtualMachines.append(VirtualMachine(memory=512))
     def getVirtualMachines(self):
@@ -44,27 +53,48 @@ class EVA:
         return self.population
     def runSimAllAlgorithm(self):
         virMachine = self.getVirtualMachines()[0]
+        iosim = self.getConfig().getIO()
+
         for element in range(self.getPopulation().countPopulation()):
             #Algorithm was stored in elementPopulation
             algo = self.getPopulation().getElements()[element].getAlgorithm()
             virMachine.loadAlgorithm(algo)
-            #run end OK
-            #bucle test
-            #fitness = 0
-            iosim = self.getConfig().getIO()
+
             fitness = 0.0
-            for numTest in range(len(iosim.getInput())):
-                if virMachine.runAlgorithm(iosim.getInput()[numTest]):
-                    temp= self.fnFitness(virMachine.getMemory(),iosim.getOutput(),virMachine.getOutput(),virMachine.getResult())
+            c = 0
+            for testInput in iosim.getInput():
+                virMachine.resetRun()
+                print(testInput)
+                virMachine.resetTest()
+                if virMachine.runAlgorithm(testInput):
+                    mem = virMachine.getMemory
+                    resu = float(self.config.getIO().getResult()[c])
+                    outputTest = str(iosim.getOutput()[element])
+                    outputVir= str(self.getVirtualMachines()[0].getOutput())
+                    resultVir= float(self.getVirtualMachines()[0].getResult())
+                    temp= self.fnFitness(mem,outputTest,resu,outputVir,resultVir)
                     fitness = fitness + temp
+                    c = c +1
                 else:
                     fitness = None
                     break
             if fitness == None:
-                element.setScore(None)
+                self.getPopulation().getElements()[element].setScore(None)
             else:
-                element.setScore(fitness/len(iosim.getInput()))
+                self.getPopulation().getElements()[element].setScore(fitness/len(iosim.getInput()))
+                print(self.getPopulation().getElements()[element].getScore())
 
+    def showAllPopulation(self):
+        print("#################################")
+        print("######## Show Population ########")
+        print("#################################")
+        popu = self.getPopulation().showAll()
+        exit()
+        print("tam",popu)
+        for index in range(len(popu)):
+            print("Code")
+            print(popu[index].getAlgorithm().getCode())
+            print("Score",popu[index].getScore())
 
     def getConfig(self):
         return self.config
@@ -74,6 +104,8 @@ class EVA:
             self.setCurrentGen(generation)
             print("Starting generation ",self.getCurrentGen())
             self.runSimAllAlgorithm()
+            #order by score
+            #choose accurate fitness value and stop if it pass
     def setCurrentGen(self,s):
         self.currentGen = s
     def getCurrentGen(self):

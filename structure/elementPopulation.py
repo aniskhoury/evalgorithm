@@ -23,6 +23,6 @@ class elementPopulation:
             print("num instructions:",len(self.getAlgorithm().getInstructions()))
             for i in self.getAlgorithm().getInstructions():
                 i.showInfo()
-            exit()
+
             print("Score:",self.getScore())
             print("#####################")
