@@ -1,6 +1,8 @@
 from structure.virtualmachine import *
 from config.evaconfig import *
 from structure.population import *
+from operator import attrgetter
+
 import math
 
 DEBUG = True
@@ -54,7 +56,6 @@ class EVA:
     def runSimAllAlgorithm(self):
         virMachine = self.getVirtualMachines()[0]
         iosim = self.getConfig().getIO()
-
         for element in range(self.getPopulation().countPopulation()):
             #Algorithm was stored in elementPopulation
             algo = self.getPopulation().getElements()[element].getAlgorithm()
@@ -64,42 +65,56 @@ class EVA:
             c = 0
             for testInput in iosim.getInput():
                 virMachine.resetRun()
-                print(testInput)
                 virMachine.resetTest()
                 if virMachine.runAlgorithm(testInput):
                     mem = virMachine.getMemory
                     resu = float(self.config.getIO().getResult()[c])
-                    outputTest = str(iosim.getOutput()[element])
-                    outputVir= str(self.getVirtualMachines()[0].getOutput())
-                    resultVir= float(self.getVirtualMachines()[0].getResult())
-                    temp= self.fnFitness(mem,outputTest,resu,outputVir,resultVir)
-                    fitness = fitness + temp
+                    try:
+                        outputTest = str(iosim.getOutput()[element])
+                        outputVir= str(self.getVirtualMachines()[0].getOutput())
+                        resultVir= float(self.getVirtualMachines()[0].getResult())
+                        temp= self.fnFitness(mem,outputTest,resu,outputVir,resultVir)
+                        fitness = fitness + temp
+                    except IndexError:
+                        fitness = -1
                     c = c +1
                 else:
-                    fitness = None
+                    fitness = -1
                     break
-            if fitness == None:
-                self.getPopulation().getElements()[element].setScore(None)
+            if fitness == -1:
+                self.getPopulation().getElements()[element].setScore(-1)
             else:
                 self.getPopulation().getElements()[element].setScore(fitness/len(iosim.getInput()))
-                print(self.getPopulation().getElements()[element].getScore())
-
+    def showBest(self):
+        print("Best:")
+        self.getPopulation().getElements()[0].showElement()
     def showAllPopulation(self):
         print("#################################")
         print("######## Show Population ########")
         print("#################################")
         popu = self.getPopulation().showAll()
-        exit()
-        for index in range(len(popu)):
-            print("Code")
-            print(popu[index].getAlgorithm().getCode())
-            print("Score",popu[index].getScore())
+
 
     def getConfig(self):
         return self.config
     def orderPopu(self):
         popu = self.getPopulation().getElements()
+        orderedPopu = sorted(popu,key=attrgetter('score'),reverse=True)
+        self.setPopulation(Population(population=orderedPopu))
 
+
+
+    def nextPopulation(self):
+        popu = Population()
+        popu.addElementPopu(self.getPopulation().getElements()[0])
+        numAlgorithms = self.getConfig().getPopulation()
+        oldPopu = self.getPopulation().getElements()
+        for i in range(numAlgorithms-1):
+            indexAlgo1 = random.randint(0,numAlgorithms-1)
+            indexAlgo2 = random.randint(0,numAlgorithms-1)
+            child = oldPopu[indexAlgo1].getAlgorithm().cross(oldPopu[indexAlgo2].getAlgorithm())
+            popu.addElementPopu(elementPopulation(algorithm=child))
+        self.setPopulation(popu)
     def run(self):
         print("Code run here")
         for generation in range(self.getConfig().getNumGenerations()):
@@ -107,6 +122,9 @@ class EVA:
             print("Starting generation ",self.getCurrentGen())
             self.runSimAllAlgorithm()
             #order by score
+            self.orderPopu()
+            self.nextPopulation()
+            self.showBest()
             #choose accurate fitness value and stop if it pass
     def setCurrentGen(self,s):
         self.currentGen = s

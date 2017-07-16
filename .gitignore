@@ -1,4 +1,13 @@
 # Byte-compiled / optimized / DLL files
+*.exe
+*.dll
+*.rst
+*.lib
+*.tcl
+*.gif
+*.eps
+*.xbm
+*.terms
 __pycache__/
 *.py[cod]
 *$py.class

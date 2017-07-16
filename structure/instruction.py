@@ -109,7 +109,7 @@ class Instruction:
         saveCursor = self.getCursor()
         self.setCursor(0)
         #code show info HERE
-        print("Code: ",self.getCode())
+        #print("Code: ",self.getCode())
         self.setCursor(saveCursor)
     def getMaxLenghtBits(self):
         return self.maxLenghtBits

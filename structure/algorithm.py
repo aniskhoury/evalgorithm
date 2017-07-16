@@ -83,8 +83,10 @@ class Algorithm:
 
 i = []
 a,b = Instruction(),Instruction()
-a.generateCode("ADDarg 0")
+a.generateCode("SUBi 127")
 b.generateCode("ADDarg 1")
+print(a.getCode())
+
 
 i.append(a)
 i.append(b)
