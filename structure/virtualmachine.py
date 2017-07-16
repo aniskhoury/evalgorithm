@@ -9,12 +9,14 @@ class VirtualMachine:
     codeFunction = {}
 
     def loadFunctions(self):
-        self.codeFunction["0000"] = self.addInmFunction
-        self.codeFunction["0001"] = self.subInmFunction
-        self.codeFunction["0010"] = self.mulInmFunction
-        self.codeFunction["0011"] = self.divInmFunction
+
+        self.codeFunction["00000"] = self.addInmFunction
+        self.codeFunction["00001"] = self.subInmFunction
+        self.codeFunction["00010"] = self.mulInmFunction
+        self.codeFunction["00011"] = self.divInmFunction
 
     def __init__(self,memory=1024,algorithm = None,pc = None):
+
         self.loadFunctions()
         if memory == None:
             self.setMemory(list())
@@ -46,22 +48,23 @@ class VirtualMachine:
         instruction = self.getNextInstruction()
         while instruction != False:
             #instruction.showInfo()
+            #instruction.showInfo()
             self.computeInstruction(instruction)
             instruction = self.getNextInstruction()
 
         return True
     def computeInstruction(self,instruction):
-        numBitsCode = 4
+        numBitsCode = 5
         instruction.resetCursor()
         code = instruction.readNextBits(numBitsCode)
         #check code of instruction and compute it
         #store result of compute instruction in ret
         if self.codeFunction.__contains__(code):
             ret = self.codeFunction[code](instruction)
+
             if ret == False:
                 return False
         return True
-
 
     def loadAlgorithm(self,a):
         self.algorithm = a
@@ -78,7 +81,6 @@ class VirtualMachine:
             self.pc = -1
     def getPc(self):
         return self.pc
-
 
     def setOutput(self,output):
         self.output = output
@@ -98,7 +100,9 @@ class VirtualMachine:
         return bin(s)[2:]
     def readInmediateInsArgs(self,instruction):
         sign = instruction.readNextBits()
-        number = instruction.readNextBits(27)
+        #32 bits - 5 code - 1 sign = 26 bits number
+        number = instruction.readNextBits(26)
+
         number = self.binToDec(number)*1.0
         if sign == 0:
             number = number *-1

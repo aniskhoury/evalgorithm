@@ -3,18 +3,52 @@ import random
 class Instruction:
     code = None
     cursor = 0
-
-    def __init__(self,code = None,evaconfig=None):
+    maxLenghtBits = 32
+    def __init__(self,code = None,evaconfig=None,maxLenghtBits=32):
         if code==None:
             if evaconfig != None:
                 self.generateRandomCode(evaconfig.getNumBitsInstruction())
             else:
-                self.generateRandomCode(32)
+                self.generateRandomCode(maxLenghtBits)
         else:
             self.setCode(code)
         #logging.info("Codi",self.getCode())
         if code != None:
             self.setCursor(0)
+    def toBin(self,s,padding=0):
+        c = str(bin(s)[2:])
+        res = ""
+        for i in range(self.maxLenghtBits-padding-len(c)):
+            res = res + "0"
+        return res+c
+    def getBinNum(self,s):
+        if s.isdigit():
+            num = int(s)
+            if num < 0:
+                return "0"+self.toBin(num*-1,padding=6)
+            else:
+                return "1"+self.toBin(num,padding=6)
+        else:
+            print("Error: no number found")
+            exit(-1)
+
+    def generateCode(self,s):
+        data = s.split()
+        if len(data)> 1:
+            cmd = data[0]
+            code = str(cmd)
+            if cmd == "ADDi":
+                code = "00000" + str(self.getBinNum(data[1]))
+                self.setCode(code)
+            if cmd == "SUBi":
+                code = "00001" + str(self.getBinNum(data[1]))
+                self.setCode(code)
+            if cmd == "MULi":
+                code = "00010" + str(self.getBinNum(data[1]))
+                self.setCode(code)
+            if cmd == "DIVi":
+                code = "00011" + str(self.getBinNum(data[1]))
+                self.setCode(code)
     def resetCursor(self):
         self.cursor = 0
     def generateRandomCode(self,bits=None):
@@ -40,7 +74,7 @@ class Instruction:
             self.setCursor(end)
             return str(self.getCode()[cursor:end])
         logging.error("Invalid readNextBits() in instruction.py, cursor=%s numBits=%s, code=%s",cursor,numBits,self.getCode())
-        exit()
+        return ""
     def validInstruction(self):
         return True
     def setCursor(self,c):
@@ -67,4 +101,3 @@ class Instruction:
 # print(i.readNextBits(5))
 # print(i.readNextBits(5))
 # print(i.readNextBits(5))
-

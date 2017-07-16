@@ -52,14 +52,18 @@ class EVA:
             #bucle test
             #fitness = 0
             iosim = self.getConfig().getIO()
-            fitness = 0
+            fitness = 0.0
             for numTest in range(len(iosim.getInput())):
                 if virMachine.runAlgorithm(iosim.getInput()[numTest]):
                     temp= self.fnFitness(virMachine.getMemory(),iosim.getOutput(),virMachine.getOutput(),virMachine.getResult())
                     fitness = fitness + temp
                 else:
-                    fitness = 0
-
+                    fitness = None
+                    break
+            if fitness == None:
+                element.setScore(None)
+            else:
+                element.setScore(fitness/len(iosim.getInput()))
 
 
     def getConfig(self):

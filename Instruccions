@@ -1,0 +1,19 @@
+Instructions:
+00000 suma inmediat a result
+ADDi (4) signe (1) num (27)
+signe -> bool, 1-> positiu, 0-> negatiu
+
+00001 resta inmediat a result
+SUBi (4) signe (1) num (27)
+signe -> bool, 1-> positiu, 0-> negatiu
+
+00010 multiplica inmediat a result
+MULi (4) signe (1) num (27)
+signe -> bool, 1-> positiu, 0-> negatiu
+
+00011 divideix inmediat a result
+DIVi (4) signe (1) num (27)
+signe -> bool, 1-> positiu, 0-> negatiu
+Error quan num = 0
+
+

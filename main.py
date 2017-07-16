@@ -22,7 +22,16 @@ logging.basicConfig(filename=logFile, level=logging.INFO)
 # simulation.run()
 # simulation.showResults()
 #addi 4
-al = Algorithm(instructions = [Instruction(code="00001000000000000000000000000110")])
+i = []
+a = Instruction()
+a.generateCode("ADDi 42")
+i.append(a)
+b = Instruction()
+
+b.generateCode("SUBi 2")
+i.append(b)
+
+al = Algorithm(instructions = i)
 virtualMach = VirtualMachine(memory=512)
 virtualMach.loadAlgorithm(al)
 virtualMach.runAlgorithm([5, 10, 15, 20])
