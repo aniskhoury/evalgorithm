@@ -111,7 +111,8 @@ class Instruction:
         #code show info HERE
         print("Code: ",self.getCode())
         self.setCursor(saveCursor)
-
+    def getMaxLenghtBits(self):
+        return self.maxLenghtBits
 #example uses
 # i = Instruction(code="0000111100010101")
 # print(i.readNextBits(5))

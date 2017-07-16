@@ -90,7 +90,6 @@ class EVA:
         print("#################################")
         popu = self.getPopulation().showAll()
         exit()
-        print("tam",popu)
         for index in range(len(popu)):
             print("Code")
             print(popu[index].getAlgorithm().getCode())
@@ -98,6 +97,9 @@ class EVA:
 
     def getConfig(self):
         return self.config
+    def orderPopu(self):
+        popu = self.getPopulation().getElements()
+
     def run(self):
         print("Code run here")
         for generation in range(self.getConfig().getNumGenerations()):
