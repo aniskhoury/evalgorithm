@@ -42,13 +42,13 @@ class Instruction:
             exit(-1)
     def toASMInmediateTxt(self):
         sign = self.readNextBits()
-        num = int(self.readNextBits(26))
+        num = int(self.readNextBits(26),2)
         self.resetCursor()
         if sign == 0:
-            return int(num)*-1
+            return num*-1
         return str(num)
     def toASMArgTxt(self):
-        return str(int(self.readNextBits(27)))
+        return str(int(self.readNextBits(27),2))
     def toASM(self):
         self.resetCursor()
         bitsCMD = 5

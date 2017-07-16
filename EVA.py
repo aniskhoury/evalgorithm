@@ -125,7 +125,6 @@ class EVA:
     def getBest(self):
         return self.getPopulation().getElements()[0]
     def run(self):
-        print("Code run here")
         for generation in range(self.getConfig().getNumGenerations()):
             self.setCurrentGen(generation)
             print("Starting generation ",self.getCurrentGen())

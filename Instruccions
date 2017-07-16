@@ -27,3 +27,16 @@ MULarg (5) num (28)
 
 00111 divisio arg
 DIVarg (5) num (28)
+
+01000 suma de memoria
+ADDmem (5) num. address (28)
+
+01001 resta de memoria
+SUBmem (5) num. address (28)
+
+01010 multiplicacio de memoria
+MULmem (5) num. address (28)
+
+01011 divisio de memoria
+DIVmem (5) num. address (28)
+

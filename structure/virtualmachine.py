@@ -18,6 +18,13 @@ class VirtualMachine:
         self.codeFunction["00101"] = self.subArgFunction
         self.codeFunction["00110"] = self.mulArgFunction
         self.codeFunction["00111"] = self.divArgFunction
+        self.codeFunction["01000"] = self.addMemFunction
+        self.codeFunction["01001"] = self.subMemFunction
+        self.codeFunction["01010"] = self.mulMemFunction
+        self.codeFunction["01011"] = self.divMemFunction
+
+
+
 
     def __init__(self,memory=1024,algorithm = None,pc = None):
 
@@ -73,11 +80,16 @@ class VirtualMachine:
     def loadAlgorithm(self,a):
         self.algorithm = a
         self.setPc(-1)
+
+    #getters & setters
+    ########################################
     def getAlgorithm(self):
         return self.algorithm
     def resetRun(self):
         self.setPc(-1)
         self.setResult(0)
+    #By default, the start is -1
+    #first increase the PC, then read the instruction
     def setPc(self,pc):
         if self.getAlgorithm() != None:
             if len(self.getAlgorithm().getInstructions()) == 0 or pc == None or pc < 0 or pc >= len(self.getAlgorithm().getInstructions()):
@@ -88,7 +100,6 @@ class VirtualMachine:
             self.pc = -1
     def getPc(self):
         return self.pc
-
     def setOutput(self,output):
         self.output = output
     def setResult(self,r):
@@ -97,14 +108,17 @@ class VirtualMachine:
         return self.result
     def getOutput(self):
         return self.output
+    ########################################
+    #Utilities for VirtualMachine
     def resetTest(self):
         self.setResult(0)
         self.setOutput("")
-    #read the standard sign(1 bit) num (27)
     def binToDec(self,s):
         return int(s,2)*1.0
     def decToBin(self,s):
         return bin(s)[2:]
+    #Read the common part of instructions#
+    ########################################
     def readArgumentsInm(self,instruction,input):
         num = int(self.binToDec(instruction.readNextBits(27)))
         if num < len(input):
@@ -116,6 +130,11 @@ class VirtualMachine:
         number = instruction.readNextBits(27)
         number = int(self.binToDec(number))
         return number
+    def readMemValues(self,i):
+        return int(i.readNextBits(27),2)
+    ########################################
+
+
     def addInmFunction(self,instruction,input):
         res = self.getResult()
         number = self.readInmediateInmArgs(instruction,input)
@@ -149,6 +168,7 @@ class VirtualMachine:
         self.setResult(res+num)
 
         return True
+
     def subArgFunction(self,instruction,input):
         res = self.getResult()
         num = self.readArgumentsInm(instruction,input)
@@ -156,6 +176,7 @@ class VirtualMachine:
             return False
         self.setResult(res-num)
         return True
+
     def mulArgFunction(self,instruction,input):
         res = self.getResult()
         num = self.readArgumentsInm(instruction,input)
@@ -163,6 +184,7 @@ class VirtualMachine:
             return False
         self.setResult(res*num)
         return True
+
     def divArgFunction(self,instruction,input):
         res = self.getResult()
         num = self.readArgumentsInm(instruction,input)
@@ -175,4 +197,40 @@ class VirtualMachine:
         except IndexError:
             return False
         self.setResult(res/num)
+        return True
+
+    def divMemFunction(self, instruction, input):
+        res = self.getResult()
+        index = self.readMemValues(instruction)
+        try:
+            self.setResult(res / self.memory[index])
+        except (IndexError,ZeroDivisionError) as e:
+            return False
+        return True
+
+    def mulMemFunction(self,instruction,input):
+        res = self.getResult()
+        index = self.readMemValues(instruction)
+        try:
+            self.setResult(res*self.memory[index])
+        except IndexError:
+            return False
+        return True
+
+    def subMemFunction(self,instruction,input):
+        res = self.getResult()
+        index = self.readMemValues(instruction)
+        try:
+            self.setResult(res-self.memory[index])
+        except IndexError:
+            return False
+        return True
+
+    def addMemFunction(self,instruction, input):
+        res = self.getResult()
+        index = self.readMemValues(instruction)
+        try:
+            self.setResult(res+self.memory[index])
+        except IndexError:
+            return False
         return True
