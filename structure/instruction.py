@@ -40,6 +40,43 @@ class Instruction:
         else:
             print("Error: no number found")
             exit(-1)
+    def toASMInmediateTxt(self):
+        sign = self.readNextBits()
+        num = int(self.readNextBits(26))
+        self.resetCursor()
+        if sign == 0:
+            return int(num)*-1
+        return str(num)
+    def toASMArgTxt(self):
+        return str(int(self.readNextBits(27)))
+    def toASM(self):
+        self.resetCursor()
+        bitsCMD = 5
+        cmd = self.readNextBits(bitsCMD)
+        text = ""
+
+        if cmd == "00000":
+            text = "ADDi " +self.toASMInmediateTxt()
+        elif cmd == "00001":
+            text = "SUBi " + self.toASMInmediateTxt()
+        elif cmd == "00010":
+            text = "MULi " + self.toASMInmediateTxt()
+        elif cmd == "00011":
+            text = "DIVi " + self.toASMInmediateTxt()
+        if text != "":
+            return text
+        if cmd == "00100":
+            text = "ADDarg "
+        elif cmd == "00101":
+            text = "SUBarg "
+        elif cmd == "00110":
+            text = "MULarg "
+        elif cmd == "00111":
+            text = "DIVarg "
+
+        if text != "":
+            return text + self.toASMArgTxt()
+        return "Unknown instruction"
     def generateCode(self,s):
         data = s.split()
         if len(data)> 1:

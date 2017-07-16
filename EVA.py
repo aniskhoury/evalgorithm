@@ -93,6 +93,8 @@ class EVA:
     def showBest(self):
         print("Best:")
         self.getPopulation().getElements()[0].showElement()
+        print("Code ASM")
+        self.getPopulation().getElements()[0].getAlgorithm().algoToASM()
     def showAllPopulation(self):
         print("#################################")
         print("######## Show Population ########")
