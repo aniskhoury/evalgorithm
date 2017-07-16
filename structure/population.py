@@ -1,5 +1,3 @@
-from config.evaconfig import *
-from structure.instruction import  *
 from structure.algorithm import *
 from structure.elementPopulation import *
 class Population:
@@ -26,7 +24,6 @@ class Population:
     def createPopulation(self,config):
         self.resetPopulation()
         #create random algorithm
-
         for i in range((config.getPopulation())):
             self.getPopulation().append(elementPopulation(Algorithm()))
     def getElements(self):

@@ -1,5 +1,6 @@
+
 from structure.virtualmachine import *
-from config.evaconfig import *
+from structure.evaconfig import *
 from structure.population import *
 from operator import attrgetter
 
@@ -56,7 +57,8 @@ class EVA:
     def runSimAllAlgorithm(self):
         virMachine = self.getVirtualMachines()[0]
         iosim = self.getConfig().getIO()
-        for element in range(self.getPopulation().countPopulation()):
+        popu = self.getPopulation()
+        for element in range(len(popu.getElements())):
             #Algorithm was stored in elementPopulation
             algo = self.getPopulation().getElements()[element].getAlgorithm()
             virMachine.loadAlgorithm(algo)
@@ -70,7 +72,7 @@ class EVA:
                     mem = virMachine.getMemory
                     resu = float(self.config.getIO().getResult()[c])
                     try:
-                        outputTest = str(iosim.getOutput()[element])
+                        outputTest = str(iosim.getOutput()[c])
                         outputVir= str(self.getVirtualMachines()[0].getOutput())
                         resultVir= float(self.getVirtualMachines()[0].getResult())
                         temp= self.fnFitness(mem,outputTest,resu,outputVir,resultVir)
@@ -103,12 +105,12 @@ class EVA:
         self.setPopulation(Population(population=orderedPopu))
 
 
-
     def nextPopulation(self):
-        popu = Population()
-        popu.addElementPopu(self.getPopulation().getElements()[0])
-        numAlgorithms = self.getConfig().getPopulation()
         oldPopu = self.getPopulation().getElements()
+
+        popu = Population()
+        popu.addElementPopu(oldPopu[0])
+        numAlgorithms = self.getConfig().getPopulation()
         for i in range(numAlgorithms-1):
             indexAlgo1 = random.randint(0,numAlgorithms-1)
             indexAlgo2 = random.randint(0,numAlgorithms-1)

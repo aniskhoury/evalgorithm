@@ -5,6 +5,7 @@ class Instruction:
     cursor = 0
     maxLenghtBits = 32
     def __init__(self,code = None,evaconfig=None,maxLenghtBits=32):
+        code = "00100000000000000000000000000000"
         if code==None:
             if evaconfig != None:
                 self.generateRandomCode(evaconfig.getNumBitsInstruction())
