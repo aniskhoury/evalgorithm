@@ -45,7 +45,7 @@ class EVA:
         return 0
     def funcFitness(self,mem, output, result,simulOutput, simResult):
         score = 0
-        # fer la comprovació desitjada
+        # fer la comprovacio desitjada
         diffSqrt = math.sqrt(simResult ** 2 - result ** 2) ** 2
         return 1 / (1 + diffSqrt)
     def createVirtualMachine(self,n=1):
@@ -54,35 +54,38 @@ class EVA:
         return self.virtualMachines
     def getPopulation(self):
         return self.population
+    def getBest(self):
+        return self.getPopulation().getElements()[0].getAlgorithm()
+
     def runSimAllAlgorithm(self):
         virMachine = self.getVirtualMachines()[0]
         iosim = self.getConfig().getIO()
         popu = self.getPopulation()
+
         for element in range(len(popu.getElements())):
+
             #Algorithm was stored in elementPopulation
             algo = self.getPopulation().getElements()[element].getAlgorithm()
             virMachine.loadAlgorithm(algo)
-
             fitness = 0.0
             c = 0
+
             for testInput in iosim.getInput():
                 virMachine.resetRun()
                 virMachine.resetTest()
                 if virMachine.runAlgorithm(testInput):
-                    mem = virMachine.getMemory
+                    mem = virMachine.getMemory()
                     resu = float(self.config.getIO().getResult()[c])
-                    try:
-                        outputTest = str(iosim.getOutput()[c])
-                        outputVir= str(self.getVirtualMachines()[0].getOutput())
-                        resultVir= float(self.getVirtualMachines()[0].getResult())
-                        temp= self.fnFitness(mem,outputTest,resu,outputVir,resultVir)
-                        fitness = fitness + temp
-                    except IndexError:
-                        fitness = -1
+                    outputTest = str(iosim.getOutput()[c])
+                    outputVir= str(self.getVirtualMachines()[0].getOutput())
+                    resultVir= float(self.getVirtualMachines()[0].getResult())
+                    temp= self.fnFitness(mem,outputTest,resu,outputVir,resultVir)
+                    fitness = fitness + temp
                     c = c +1
                 else:
                     fitness = -1
                     break
+
             if fitness == -1:
                 self.getPopulation().getElements()[element].setScore(-1)
             else:
@@ -117,6 +120,8 @@ class EVA:
             child = oldPopu[indexAlgo1].getAlgorithm().cross(oldPopu[indexAlgo2].getAlgorithm())
             popu.addElementPopu(elementPopulation(algorithm=child))
         self.setPopulation(popu)
+    def getBest(self):
+        return self.getPopulation().getElements()[0]
     def run(self):
         print("Code run here")
         for generation in range(self.getConfig().getNumGenerations()):
@@ -125,8 +130,10 @@ class EVA:
             self.runSimAllAlgorithm()
             #order by score
             self.orderPopu()
+            if self.getBest().getScore() == 1:
+                return
             self.nextPopulation()
-            self.showBest()
+
             #choose accurate fitness value and stop if it pass
     def setCurrentGen(self,s):
         self.currentGen = s

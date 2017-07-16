@@ -53,8 +53,6 @@ class VirtualMachine:
         #load and process all instructions of algorithm
         instruction = self.getNextInstruction()
         while instruction != False:
-            #instruction.showInfo()
-            #instruction.showInfo()
             if self.computeInstruction(instruction,input) == False:
                 return False
             instruction = self.getNextInstruction()
@@ -69,6 +67,7 @@ class VirtualMachine:
         ret = False
         if self.codeFunction.__contains__(code):
             ret = self.codeFunction[code](instruction,input)
+
         return ret
 
     def loadAlgorithm(self,a):
@@ -113,8 +112,7 @@ class VirtualMachine:
         else:
             return False
     def readInmediateInmArgs(self,instruction,input):
-        #32 bits - 5 code - 27
-        instruction.showInfo()
+        #32 bits - 5 code = 27 bits
         number = instruction.readNextBits(27)
         number = int(self.binToDec(number))
         return number
@@ -170,7 +168,11 @@ class VirtualMachine:
         num = self.readArgumentsInm(instruction,input)
         if num == False:
             return False
-        if input[num] == 0:
+        try:
+            n = input[num]
+            if n == 0:
+                return False
+        except IndexError:
             return False
         self.setResult(res/num)
         return True

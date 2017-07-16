@@ -54,15 +54,17 @@ class Algorithm:
         prob = 2
         for i in range(maxBits):
             codeRes = codeRes + self.copyBitInstructionWithMut(i1.getCode()[i],i2.getCode()[i],prob)
+        lenCode = len(codeRes)
         #complete code (if too much delete mutation occur
         #can break 32 bits instruction
-        if len(codeRes) < maxBits:
-            for i in range(maxBits-len(codeRes)):
+        if lenCode < maxBits:
+            for i in range(maxBits-lenCode):
                 codeRes = codeRes + str(random.randint(0,1))
-        if len(codeRes) > maxBits:
+        if lenCode > maxBits:
             codeRes = codeRes[:maxBits]
-        return Instruction(code=codeRes)
-
+        i = Instruction()
+        i.setCode(codeRes)
+        return i
     def cross(self,b):
         a = self
         numInstructionsA = len(self.getInstructions())
@@ -80,18 +82,3 @@ class Algorithm:
                 newAlgorithm.addInstruction(self.crossInstruction(a.getInstructions()[c], a.getInstructions()[c]))
                 c = c + 1
         return newAlgorithm
-
-i = []
-a,b = Instruction(),Instruction()
-a.generateCode("SUBi 127")
-b.generateCode("ADDarg 1")
-print(a.getCode())
-
-
-i.append(a)
-i.append(b)
-a = Algorithm(instructions=i)
-b = Algorithm(instructions=i)
-c = a.cross(b)
-c.showInstructions()
-

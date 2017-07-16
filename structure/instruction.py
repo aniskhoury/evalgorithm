@@ -4,6 +4,7 @@ class Instruction:
     code = None
     cursor = 0
     maxLenghtBits = 32
+
     def __init__(self,code = None,evaconfig=None,maxLenghtBits=32):
         code = "00100000000000000000000000000000"
         if code==None:
@@ -110,7 +111,7 @@ class Instruction:
         saveCursor = self.getCursor()
         self.setCursor(0)
         #code show info HERE
-        #print("Code: ",self.getCode())
+        print("Code: ",self.getCode())
         self.setCursor(saveCursor)
     def getMaxLenghtBits(self):
         return self.maxLenghtBits

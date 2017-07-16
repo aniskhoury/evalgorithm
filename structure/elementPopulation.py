@@ -19,10 +19,8 @@ class elementPopulation:
     def showElement(self):
         if self.getAlgorithm() != None:
             print("#####################")
-            print("Show Element")
             print("num instructions:",len(self.getAlgorithm().getInstructions()))
             for i in self.getAlgorithm().getInstructions():
                 i.showInfo()
 
             print("Score:",self.getScore())
-            print("#####################")
