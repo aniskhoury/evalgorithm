@@ -18,6 +18,11 @@ class EVAconfig:
         self.setTypeCross(typeCross)
         self.setPopulation(population)
         self.initGlobalConfig()
+        self.setIO(io)
+    def setIO(self,io):
+        self.io = io
+    def getIO(self):
+        return self.io
     def setNumGenerations(self,n):
         self.numGenerations = n
     def setNumVirtualMachines(self,n):

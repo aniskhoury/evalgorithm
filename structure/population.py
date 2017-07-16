@@ -6,11 +6,15 @@ class Population:
     population = []
 
     def __init__(self,population=[]):
-        self.setPopulation(population)
+        self.setElements(population)
 
+    def getPopulation(self):
+        return self.population
     def setPopulation(self,s):
         self.population = s
-    def getPopulation(self):
+    def setElements(self,s):
+        self.population = s
+    def getElements(self):
         return self.population
     def putScore(self,index,score):
         self.getPopulation()[index]

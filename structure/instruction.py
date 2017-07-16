@@ -15,7 +15,8 @@ class Instruction:
         #logging.info("Codi",self.getCode())
         if code != None:
             self.setCursor(0)
-
+    def resetCursor(self):
+        self.cursor = 0
     def generateRandomCode(self,bits=None):
         numBits = bits
         result = ""
@@ -37,7 +38,7 @@ class Instruction:
         end = cursor + numBits
         if end <= len(self.getCode()):
             self.setCursor(end)
-            return self.getCode()[cursor:end]
+            return str(self.getCode()[cursor:end])
         logging.error("Invalid readNextBits() in instruction.py, cursor=%s numBits=%s, code=%s",cursor,numBits,self.getCode())
         exit()
     def validInstruction(self):

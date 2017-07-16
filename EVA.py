@@ -6,12 +6,13 @@ class EVA:
     virtualMachines = []
     config = None
     currentGen = 0
-    population = []
+    population = None
     fnFitness = None
     fnCross = None
 
     def __init__(self,config,virtualMachines=None,fnFitness=None,fnCross=None):
         self.setConfig(config)
+        self.createVirtualMachine(n=1)
         self.welcomeMessage()
         self.population = Population()
         self.population.createPopulation(config)
@@ -43,18 +44,36 @@ class EVA:
         return self.population
     def runSimAllAlgorithm(self):
         virMachine = self.getVirtualMachines()[0]
-        for i in self.getPopulation():
-            virMachine.loadAlgorithm(i.getAlgorithm())
+        for element in range(self.getPopulation().countPopulation()):
+            #Algorithm was stored in elementPopulation
+            algo = self.getPopulation().getElements()[element].getAlgorithm()
+            virMachine.loadAlgorithm(algo)
             #run end OK
-            if virMachine.runAlgorithm():
-                i.
-                score = i.getScore()
+            #bucle test
+            #fitness = 0
+            iosim = self.getConfig().getIO()
+            fitness = 0
+            for numTest in range(len(iosim.getInput())):
+                if virMachine.runAlgorithm(iosim.getInput()[numTest]):
+                    temp= self.fnFitness(virMachine.getMemory(),iosim.getOutput(),virMachine.getOutput(),virMachine.getResult())
+                    fitness = fitness + temp
+                else:
+                    fitness = 0
+
+
+
     def getConfig(self):
         return self.config
     def run(self):
         print("Code run here")
-        for generation in range(self.getConfig().setNumGenerations()):
+        for generation in range(self.getConfig().getNumGenerations()):
+            self.setCurrentGen(generation)
+            print("Starting generation ",self.getCurrentGen())
             self.runSimAllAlgorithm()
+    def setCurrentGen(self,s):
+        self.currentGen = s
+    def getCurrentGen(self):
+        return self.currentGen
     def showResults(self):
         print("###############################")
         print("########### Results ###########")
