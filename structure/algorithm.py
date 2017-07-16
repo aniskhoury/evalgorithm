@@ -10,7 +10,7 @@ class Algorithm:
         else:
             self.setInstructions([])
             #number of instructions per default
-            self.generateRandomAlgorithm(3)
+            self.generateRandomAlgorithm(5)
 
     def setInstructions(self,i):
         self.instructions = i
