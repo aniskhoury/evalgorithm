@@ -7,8 +7,6 @@ import math
 from structure.virtualmachine import *
 
 def myFitness(mem, output, result,simulOutput, simResult):
-    score = 0
-    # fer la comprovacio desitjada
     diffSqrt = (simResult - result)**2
     return 1 / (1 + diffSqrt)
 
@@ -34,6 +32,7 @@ io = IO()
 io.addTest([5, 10, 15, 20],"35",35)
 io.addTest([4,9,14,19],"32",32)
 io.addTest([2,4,6,8],"14",14)
+io.addTest([2,4,6,50],"56",56)
 
 configuration = EVAconfig(io, numGenerations=50, numVirtualMachines=1, typeCross=0, population=100)
 simulation = EVA(configuration, fnFitness=myFitness)

@@ -49,7 +49,7 @@ class EVA:
         diffSqrt = math.sqrt(simResult ** 2 - result ** 2) ** 2
         return 1 / (1 + diffSqrt)
     def createVirtualMachine(self,n=1):
-        self.virtualMachines.append(VirtualMachine(memory=512))
+        self.virtualMachines.append(VirtualMachine(memory=4096*32))
     def getVirtualMachines(self):
         return self.virtualMachines
     def getPopulation(self):

@@ -29,6 +29,8 @@ class VirtualMachine:
     def __init__(self,memory=1024,algorithm = None,pc = None):
 
         self.loadFunctions()
+        #by default allocate 1024*(32bits)
+        #initialized by 0
         if memory == None:
             self.setMemory(list())
         else:

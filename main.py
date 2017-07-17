@@ -53,4 +53,11 @@ simulation.showAllPopulation()
 # else:
 #     print(virtualMach.getResult())
 
+###Example instruction
+a = Instruction()
+a.generateCode("ADDarg 0")
+#Or you can assign code to instruction with
+a.setCode(a.getCode())
+#Or by constructor
+a = Instruction(code="0"*32)
 

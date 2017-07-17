@@ -1,12 +1,15 @@
 import logging
 import random
+from structure.configFramework import *
+
 class Instruction:
     code = None
     cursor = 0
     maxLenghtBits = 32
 
     def __init__(self,code = None,evaconfig=None,maxLenghtBits=32):
-        code = "00100000000000000000000000000000"
+        global initCodeInstruction
+        code = '%s' % initCodeInstruction
         if code==None:
             if evaconfig != None:
                 self.generateRandomCode(evaconfig.getNumBitsInstruction())
@@ -76,6 +79,16 @@ class Instruction:
 
         if text != "":
             return text + self.toASMArgTxt()
+        if cmd == "01000":
+            text = "MEMadd "
+        elif cmd == "01001":
+            text = "MEMsub "
+        elif cmd == "01010":
+            text = "MEMmul "
+        elif cmd == "01011":
+            text = "MEMdiv "
+        if text != "":
+            return text + self.toASMArgTxt()
         return "Unknown instruction"
     def generateCode(self,s):
         data = s.split()
@@ -105,6 +118,18 @@ class Instruction:
                 self.setCode(code)
             if cmd == "DIVarg":
                 code = "00111" + str(self.getBinNumArgs(data[1]))
+                self.setCode(code)
+            if cmd == "MEMadd":
+                code = "01000" + str(self.getBinNumArgs(data[1]))
+                self.setCode(code)
+            if cmd == "MEMsub":
+                code = "01001" + str(self.getBinNumArgs(data[1]))
+                self.setCode(code)
+            if cmd == "MEMmul":
+                code = "01010" + str(self.getBinNumArgs(data[1]))
+                self.setCode(code)
+            if cmd == "MEMdiv":
+                code = "01011" + str(self.getBinNumArgs(data[1]))
                 self.setCode(code)
     def resetCursor(self):
         self.cursor = 0
