@@ -63,7 +63,6 @@ class EVA:
         popu = self.getPopulation()
 
         for element in range(len(popu.getElements())):
-
             #Algorithm was stored in elementPopulation
             algo = self.getPopulation().getElements()[element].getAlgorithm()
             virMachine.loadAlgorithm(algo)

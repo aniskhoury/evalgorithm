@@ -1,1 +1,1 @@
-initCodeInstruction = "01000000000000000000000000000000"
+initCodeInstruction = [int(i) for i  in "00100000000000000000000000000000"]

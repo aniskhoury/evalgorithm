@@ -1,6 +1,7 @@
 from structure.instruction import *
 class Algorithm:
     instructions = []
+    numInstructionsDefault = 3
     def __init__(self,instructions=None):
         if instructions != None:
             if instructions == "empty":
@@ -10,7 +11,7 @@ class Algorithm:
         else:
             self.setInstructions([])
             #number of instructions per default
-            self.generateRandomAlgorithm(5)
+            self.generateRandomAlgorithm(self.numInstructionsDefault)
 
     def setInstructions(self,i):
         self.instructions = i
@@ -25,6 +26,7 @@ class Algorithm:
     def showInstructions(self):
         for i in self.getInstructions():
             i.showInfo()
+
     def algoToASM(self):
         for instruction in self.getInstructions():
             insASM = instruction.toASM()

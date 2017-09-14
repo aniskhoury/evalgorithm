@@ -12,6 +12,7 @@ class EVAconfig:
     typeSelect = 0
     numBitsInstruction = 32
     population = 100
+    instructionSkeleton = [int(i) for i  in "00100000000000000000000000000000"]
     io = None
     def __init__(self,io,numGenerations=800, numVirtualMachines=1, typeCross=0, population=100):
         self.setNumGenerations(numGenerations)
@@ -20,6 +21,8 @@ class EVAconfig:
         self.setPopulation(population)
         self.initGlobalConfig()
         self.setIO(io)
+    def getInstrucionSkeleton(self):
+        return self.instructionSkeleton
     def setIO(self,io):
         self.io = io
     def getIO(self):

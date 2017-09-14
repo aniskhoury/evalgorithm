@@ -8,7 +8,7 @@ from structure.virtualmachine import *
 
 def myFitness(mem, output, result,simulOutput, simResult):
     score = 0
-    # fer la comprovació desitjada
+    # fer la comprovacio desitjada
     diffSqrt = (simResult - result)**2
     return 1 / (1 + diffSqrt)
 
@@ -32,12 +32,30 @@ i.append(b)
 b.showInfo()
 al = Algorithm(instructions = i)
 io = IO()
-io.addTest([5, 10, 15, 20],"15",15)
-io.addTest([4,9,14,19],"13",13)
-pop = Population()
-pop.addElementPopu(elementPopulation(al))
-configuration = EVAconfig(io, numGenerations=5, numVirtualMachines=1, typeCross=0, population=100)
+io.addTest([5, 10, 15, 20],"15",300)
+io.addTest([4,9,14,19],"13",247)
+io.addTest([5, 12, 15, 20],"15",340)
+
+
+#Param:
+# fnFitness -> function fitness
+# fnCross -> function cross
+# Population will create elements specificated in EVAconfig
+# with population param
+# simulation = EVA(configuration, fnFitness=myFitness,fnCross=None,population=None)
+
+
+configuration = EVAconfig(io, numGenerations=5000, numVirtualMachines=1, typeCross=0, population=100)
+simulation = EVA(configuration, fnFitness=myFitness)
+simulation.run()
+simulation.showResults()
+simulation.showBest()
+
+
+
+exit()
 simulation = EVA(configuration, fnFitness=myFitness,population=pop)
+
 simulation.run()
 simulation.showResults()
 simulation.showAllPopulation()

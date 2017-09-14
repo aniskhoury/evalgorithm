@@ -19,12 +19,14 @@ logging.basicConfig(filename=logFile, level=logging.INFO)
 i = []
 a,b = Instruction(),Instruction()
 a.generateCode("ADDarg 0")
-b.generateCode("ADDarg 1")
+b.generateCode("ADDarg 4")
 
 i.append(a)
 i.append(b)
 a = Algorithm(instructions=i)
-b = Algorithm(instructions=i)
-c = a.cross(b)
-c.showInstructions()
 
+a.showInstructions()
+virtualMach = VirtualMachine(memory=512)
+virtualMach.loadAlgorithm(a)
+virtualMach.runAlgorithm([5,7,8,9,10])
+print(virtualMach.getResult())

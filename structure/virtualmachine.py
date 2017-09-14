@@ -24,8 +24,6 @@ class VirtualMachine:
         self.codeFunction["01011"] = self.divMemFunction
 
 
-
-
     def __init__(self,memory=1024,algorithm = None,pc = None):
 
         self.loadFunctions()
@@ -94,6 +92,7 @@ class VirtualMachine:
     #first increase the PC, then read the instruction
     def setPc(self,pc):
         if self.getAlgorithm() != None:
+#TODO: Ficar a l'algorisme el numero dinstruccions per no recalcular amb el len
             if len(self.getAlgorithm().getInstructions()) == 0 or pc == None or pc < 0 or pc >= len(self.getAlgorithm().getInstructions()):
                 self.pc = -1
             else:

@@ -2,21 +2,23 @@ import logging
 import random
 from structure.configFramework import *
 
+
+def listToStr(self, l):
+    return ''.join(str(element) for element in l)
 class Instruction:
     code = None
     cursor = 0
     maxLenghtBits = 32
-
+    skeleton = [int(i) for i  in "00100000000000000000000000000000"]
     def __init__(self,code = None,evaconfig=None,maxLenghtBits=32):
-        global initCodeInstruction
-        code = '%s' % initCodeInstruction
-        if code==None:
-            if evaconfig != None:
-                self.generateRandomCode(evaconfig.getNumBitsInstruction())
-            else:
-                self.generateRandomCode(maxLenghtBits)
+        #TODO: Inicialitzar la instruccio amb un codi raonablement
+        #proper millora molt temps cerca. Millorar aixo del Evaconfig
+        if self.skeleton==None:
+            self.generateRandomCode(bits=maxLenghtBits)
         else:
-            self.setCode(code)
+            self.setCode(self.skeleton)
+            if code != None:
+                self.setCode(code)
         #logging.info("Codi",self.getCode())
         if code != None:
             self.setCursor(0)
@@ -52,6 +54,7 @@ class Instruction:
         return str(num)
     def toASMArgTxt(self):
         return str(int(self.readNextBits(27),2))
+
     def toASM(self):
         self.resetCursor()
         bitsCMD = 5
@@ -94,69 +97,75 @@ class Instruction:
         data = s.split()
         if len(data)> 1:
             cmd = data[0]
-            code = str(cmd)
-            if cmd == "ADDi":
-                code = "00000" + str(self.getBinNum(data[1],padding=6))
-                self.setCode(code)
-            if cmd == "SUBi":
-                code = "00001" + str(self.getBinNum(data[1],padding=6))
-                self.setCode(code)
-            if cmd == "MULi":
-                code = "00010" + str(self.getBinNum(data[1],padding=6))
-                self.setCode(code)
-            if cmd == "DIVi":
-                code = "00011" + str(self.getBinNum(data[1],padding=6))
-                self.setCode(code)
-            if cmd == "ADDarg":
-                code = "00100" + str(self.getBinNumArgs(data[1]))
-                self.setCode(code)
-            if cmd == "SUBarg":
-                code = "00101" + str(self.getBinNumArgs(data[1]))
-                self.setCode(code)
-            if cmd == "MULarg":
-                code = "00110" + str(self.getBinNum(data[1]))
-                self.setCode(code)
-            if cmd == "DIVarg":
-                code = "00111" + str(self.getBinNumArgs(data[1]))
-                self.setCode(code)
-            if cmd == "MEMadd":
-                code = "01000" + str(self.getBinNumArgs(data[1]))
-                self.setCode(code)
-            if cmd == "MEMsub":
-                code = "01001" + str(self.getBinNumArgs(data[1]))
-                self.setCode(code)
-            if cmd == "MEMmul":
-                code = "01010" + str(self.getBinNumArgs(data[1]))
-                self.setCode(code)
-            if cmd == "MEMdiv":
-                code = "01011" + str(self.getBinNumArgs(data[1]))
-                self.setCode(code)
+            code = list()
+            try:
+                code = code + list(map(int,cmd))
+            except ValueError:
+                if cmd == "ADDi":
+                    code = list()
+                    code = code + list("00000") + list(str(self.getBinNum(data[1],padding=6)))
+                    self.setCode(code)
+                if cmd == "SUBi":
+                    code = code + list("00001") + list(str(self.getBinNum(data[1],padding=6)))
+                    self.setCode(code)
+                if cmd == "MULi":
+                    code = code + list("00010") + list(str(self.getBinNum(data[1],padding=6)))
+                    self.setCode(code)
+                if cmd == "DIVi":
+                    code = code + list("00011") + list(str(self.getBinNum(data[1],padding=6)))
+                    self.setCode(code)
+                if cmd == "ADDarg":
+                    code = code + list("00100") + list(str(self.getBinNumArgs(data[1])))
+                    self.setCode(code)
+                if cmd == "SUBarg":
+                    code = code + list("00101") + list(str(self.getBinNumArgs(data[1])))
+                    self.setCode(code)
+                if cmd == "MULarg":
+                    code = code + list("00110") + list(str(self.getBinNum(data[1])))
+                    self.setCode(code)
+                if cmd == "DIVarg":
+                    code = code + list("00111") + list(str(self.getBinNumArgs(data[1])))
+                    self.setCode(code)
+                if cmd == "MEMadd":
+                    code = code + list("01000") + list(str(self.getBinNumArgs(data[1])))
+                    self.setCode(code)
+                if cmd == "MEMsub":
+                    code = code + list("01001") + list(str(self.getBinNumArgs(data[1])))
+                    self.setCode(code)
+                if cmd == "MEMmul":
+                    code = code + list("01010") + list(str(self.getBinNumArgs(data[1])))
+                    self.setCode(code)
+                if cmd == "MEMdiv":
+                    code = code + list("01011") + list(str(self.getBinNumArgs(data[1])))
+                    self.setCode(list(map(int,code)))
+
     def resetCursor(self):
         self.cursor = 0
-    def generateRandomCode(self,bits=None):
-        numBits = bits
-        result = ""
-        if numBits == None:
-            global numBitsInstruction
-            numBits = numBitsInstruction
-        for c in range(numBits):
-            result = result + str(random.randint(0,1))
+    def generateRandomCode(self,bits=32):
+        result = []
+        for i in range(bits):
+            result.append(random.randint(0,1))
         self.setCode(result)
+
     def setCode(self,c):
         #random code
         self.code = c
+    #def readNextBits(self,numBits=1):
+    #    cursor = self.getCursor()
+    #    end = cursor + numBits
+    #    if end <= len(self.getCode()):
+    #        self.setCursor(end)
+    #        return str(self.getCode()[cursor:end])
+    #    logging.error("Invalid readNextBits() in instruction.py, cursor=%s numBits=%s, code=%s",cursor,numBits,self.getCode())
+    #    return ""
     def readNextBits(self,numBits=1):
         cursor = self.getCursor()
-
-        if self.getCode() == None:
-            logging.error("No code in readNextBits(self,numBits=1) ")
-            return False
         end = cursor + numBits
-        if end <= len(self.getCode()):
-            self.setCursor(end)
-            return str(self.getCode()[cursor:end])
-        logging.error("Invalid readNextBits() in instruction.py, cursor=%s numBits=%s, code=%s",cursor,numBits,self.getCode())
-        return ""
+        self.setCursor(end)
+        res = self.getCode()[cursor:end]
+        res = ''.join([str(i) for i in res])
+        return res
+
     def validInstruction(self):
         return True
     def setCursor(self,c):

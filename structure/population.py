@@ -24,6 +24,7 @@ class Population:
     def createPopulation(self,config):
         self.resetPopulation()
         #create random algorithm
+        algorithmSkeleton = config.getInstrucionSkeleton()
         for i in range((config.getPopulation())):
             self.getPopulation().append(elementPopulation(Algorithm()))
     def getElements(self):
