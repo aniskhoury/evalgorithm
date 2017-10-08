@@ -88,7 +88,7 @@ class EVA:
             if fitness == -1:
                 self.getPopulation().getElements()[element].setScore(-1)
             else:
-                self.getPopulation().getElements()[element].setScore(fitness/len(iosim.getInput()))
+                self.getPopulation().getElements()[element].setScore(fitness/(len(iosim.getInput())))
     def showBest(self):
         print("Best:")
         self.getPopulation().getElements()[0].showElement()
@@ -107,7 +107,10 @@ class EVA:
         popu = self.getPopulation().getElements()
         orderedPopu = sorted(popu,key=attrgetter('score'),reverse=True)
         self.setPopulation(Population(population=orderedPopu))
-
+    def showPopuScore(self):
+        popu = self.getPopulation().getElements()
+        for i in popu:
+            i.showElement()
 
     def nextPopulation(self):
         oldPopu = self.getPopulation().getElements()

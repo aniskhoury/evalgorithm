@@ -90,6 +90,12 @@ class Instruction:
             text = "MEMmul "
         elif cmd == "01011":
             text = "MEMdiv "
+
+        elif cmd == "01111":
+            text = "PUSH " + str(int(self.readNextBits(5),2)) +" "+ str(int(self.readNextBits(23),2))
+
+            def toASMArgTxt(self):
+                return str(int(self.readNextBits(27), 2))
         if text != "":
             return text + self.toASMArgTxt()
         return "Unknown instruction"
@@ -138,6 +144,9 @@ class Instruction:
                 if cmd == "MEMdiv":
                     code = code + list("01011") + list(str(self.getBinNumArgs(data[1])))
                     self.setCode(list(map(int,code)))
+                if cmd == "PUSH":
+                    code = code + list("01111") + list(str(self.getBinNumArgs(data[1],padding=27))) + list(str(self.getBinNumArgs(data[1],padding=10)))
+                    self.setCode(code)
 
     def resetCursor(self):
         self.cursor = 0

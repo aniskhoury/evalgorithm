@@ -19,14 +19,29 @@ class Population:
         self.getPopulation()[index] = score
     def addElementPopu(self,e):
         self.getPopulation().append(e)
+
+
     def resetPopulation(self):
         self.setPopulation([])
+
+    def genInstruction(self,txt):
+        a = Instruction()
+        a.generateCode(txt)
+        return a
+    def getInstructionSkeleton(self):
+        i = []
+        i.append(self.genInstruction("PUSH 1 5"))
+        i.append(self.genInstruction("PUSH 2 5"))
+        i.append(self.genInstruction("PUSH 3 5"))
+        result = Algorithm(instructions=i)
+        return result
     def createPopulation(self,config):
         self.resetPopulation()
         #create random algorithm
-        algorithmSkeleton = config.getInstrucionSkeleton()
+        algorithmSkeleton = self.getInstructionSkeleton()
+
         for i in range((config.getPopulation())):
-            self.getPopulation().append(elementPopulation(Algorithm()))
+            self.getPopulation().append(elementPopulation(algorithmSkeleton))
     def getElements(self):
         return self.getPopulation()
     def showAll(self):

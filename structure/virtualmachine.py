@@ -22,7 +22,7 @@ class VirtualMachine:
         self.codeFunction["01001"] = self.subMemFunction
         self.codeFunction["01010"] = self.mulMemFunction
         self.codeFunction["01011"] = self.divMemFunction
-
+        self.codeFunction["01111"] = self.pushMemFunction
 
     def __init__(self,memory=1024,algorithm = None,pc = None):
 
@@ -88,6 +88,7 @@ class VirtualMachine:
     def resetRun(self):
         self.setPc(-1)
         self.setResult(0)
+        self.setMemory([0] * 1024)
     #By default, the start is -1
     #first increase the PC, then read the instruction
     def setPc(self,pc):
@@ -232,6 +233,16 @@ class VirtualMachine:
         index = self.readMemValues(instruction)
         try:
             self.setResult(res+self.memory[index])
+        except IndexError:
+            return False
+        return True
+    def pushMemFunction(self,instruction, input):
+        res = self.getResult()
+        addr = int(instruction.readNextBits(5),2)
+        num = int(instruction.readNextBits(23),2)
+
+        try:
+            self.memory[addr] = num
         except IndexError:
             return False
         return True

@@ -7,8 +7,15 @@ import math
 from structure.virtualmachine import *
 
 def myFitness(mem, output, result,simulOutput, simResult):
-    diffSqrt = (simResult - result)**2
-    return 1 / (1 + diffSqrt)
+    try:
+        print("mem1",mem[1])
+        print("mem2",mem[2])
+        resulAlgoritme =  mem[1]/mem[2]
+        diffSqrt =  (result - resulAlgoritme)**2
+        return 1/(1 + diffSqrt)
+    except ZeroDivisionError:
+        return 0
+
 
 logFile = "log.txt"
 logging.basicConfig(filename=logFile, level=logging.INFO)
@@ -18,22 +25,23 @@ logging.basicConfig(filename=logFile, level=logging.INFO)
 # simulation.run()
 # simulation.showResults()
 #addi 4
+def genInstruction(txt):
+    a = Instruction()
+    a.generateCode(txt)
+    return a
 i = []
 a = Instruction()
-a.generateCode("ADDarg 0")
-i.append(a)
-b = Instruction()
+i.append(genInstruction("PUSH 1 5"))
+i.append(genInstruction("PUSH 2 5"))
+i.append(genInstruction("PUSH 3 5"))
 
-b.generateCode("ADDarg 1")
-i.append(b)
 
 al = Algorithm(instructions = i)
+al.showInstructions()
 io = IO()
 
 
-io.addTest([20,5,6,8],"",200)
-io.addTest([2,4,6,8],"",48)
-io.addTest([2,8,6,50],"",500)
+io.addTest([20,5,6,8],"",20)
 
 configuration = EVAconfig(io, numGenerations=1000, numVirtualMachines=1, typeCross=0, population=100)
 simulation = EVA(configuration, fnFitness=myFitness)
