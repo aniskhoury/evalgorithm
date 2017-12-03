@@ -179,7 +179,7 @@ class Instruction:
         return True
     def setCursor(self,c):
         if c < 0 or c >= len(self.getCode()):
-            logging.error("Bad cursor value %s and code %s",c,self.getCode())
+            #logging.error("Bad cursor value %s and code %s",c,self.getCode())
             return False
         self.cursor = c
         return True
