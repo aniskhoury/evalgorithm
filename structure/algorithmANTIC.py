@@ -104,10 +104,10 @@ class Algorithm:
             b = self
             a = algorithmB
         for i in range(len(b.getInstructions())):
-
+            #probability of new instruction
             if random.randint(1,1000) == 1:
                 child.addInstruction(Instruction("00000000000000000",randomCode=True))
-            #type cross: half code A, half code B, in this order.
+
             if type==0:
                 nextCodeInstructionChild = ""
                 codeA = a.getInstructions()[i].getCode()

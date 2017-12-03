@@ -93,7 +93,6 @@ class VirtualMachine:
     #first increase the PC, then read the instruction
     def setPc(self,pc):
         if self.getAlgorithm() != None:
-#TODO: Ficar a l'algorisme el numero dinstruccions per no recalcular amb el len
             if len(self.getAlgorithm().getInstructions()) == 0 or pc == None or pc < 0 or pc >= len(self.getAlgorithm().getInstructions()):
                 self.pc = -1
             else:
@@ -197,6 +196,8 @@ class VirtualMachine:
             if n == 0:
                 return False
         except IndexError:
+            return False
+        except TypeError:
             return False
         self.setResult(res/num)
         return True

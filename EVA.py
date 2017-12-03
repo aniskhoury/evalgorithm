@@ -14,13 +14,13 @@ class EVA:
     population = None
     fnFitness = None
     fnCross = None
-
-    def __init__(self,config,virtualMachines=None,fnFitness=None,fnCross=None,population=None):
+    fnSkeleton = None
+    def __init__(self,config,virtualMachines=None,fnFitness=None,fnCross=None,population=None,funcSkeleton=None):
         self.setConfig(config)
         self.createVirtualMachine(n=1)
         self.welcomeMessage()
         if population == None:
-            self.population = Population()
+            self.population = Population(fnskeleton=funcSkeleton)
             self.population.createPopulation(config)
         else:
             self.setPopulation(population)
@@ -34,6 +34,7 @@ class EVA:
             self.fnCross = self.funcCross()
         else:
             self.fnCross = fnCross
+
     def getPopulation(self):
         return self.population
     def setPopulation(self,s):
@@ -56,7 +57,6 @@ class EVA:
         return self.population
     def getBest(self):
         return self.getPopulation().getElements()[0].getAlgorithm()
-
     def runSimAllAlgorithm(self):
         virMachine = self.getVirtualMachines()[0]
         iosim = self.getConfig().getIO()
@@ -73,12 +73,17 @@ class EVA:
                 virMachine.resetRun()
                 virMachine.resetTest()
                 if virMachine.runAlgorithm(testInput):
-                    mem = virMachine.getMemory()
-                    resu = float(self.config.getIO().getResult()[c])
-                    outputTest = str(iosim.getOutput()[c])
-                    outputVir= str(self.getVirtualMachines()[0].getOutput())
-                    resultVir= float(self.getVirtualMachines()[0].getResult())
-                    temp= self.fnFitness(mem,outputTest,resu,outputVir,resultVir)
+                    param = {}
+                    param["mem"] = virMachine.getMemory()
+                    param["resultExpected"] =  iosim.getResult()[c]
+                    param["outputExpected"] =  iosim.getOutput()[c]
+                    param["output"] =  str(self.getVirtualMachines()[0].getOutput())
+                    param["resultVir"] =  float(self.getVirtualMachines()[0].getResult())
+                    param["algorithm"] = algo
+                    param["input"] = testInput
+
+
+                    temp= self.fnFitness(param)
                     fitness = fitness + temp
                     c = c +1
                 else:
@@ -88,10 +93,10 @@ class EVA:
             if fitness == -1:
                 self.getPopulation().getElements()[element].setScore(-1)
             else:
-                self.getPopulation().getElements()[element].setScore(fitness/(len(iosim.getInput())))
+                self.getPopulation().getElements()[element].setScore(fitness/c)
     def showBest(self):
         print("Best:")
-        self.getPopulation().getElements()[0].showElement()
+        #self.getPopulation().getElements()[0].showElement()
         print("Code ASM")
         self.getPopulation().getElements()[0].getAlgorithm().algoToASM()
     def showAllPopulation(self):
@@ -126,14 +131,16 @@ class EVA:
         self.setPopulation(popu)
     def getBest(self):
         return self.getPopulation().getElements()[0]
-    def run(self):
+    def run(self,success=0.7):
         for generation in range(self.getConfig().getNumGenerations()):
             self.setCurrentGen(generation)
             print("Starting generation ",self.getCurrentGen())
             self.runSimAllAlgorithm()
             #order by score
             self.orderPopu()
-            if self.getBest().getScore() == 1:
+            print("Actual best with score ",self.getBest().getScore())
+            if self.getBest().getScore() >=success:
+                print("Found solution with score",self.getBest().getScore())
                 return
             self.nextPopulation()
 

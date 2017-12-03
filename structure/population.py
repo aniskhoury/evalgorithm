@@ -2,10 +2,13 @@ from structure.algorithm import *
 from structure.elementPopulation import *
 class Population:
     population = []
-
-    def __init__(self,population=[]):
+    fnskeleton = None
+    def __init__(self,population=[],fnskeleton=None):
         self.setElements(population)
-
+        if fnskeleton == None:
+            self.fnskeleton = self.getInstructionSkeleton()
+        else:
+            self.fnskeleton = fnskeleton
     def getPopulation(self):
         return self.population
     def setPopulation(self,s):
@@ -29,16 +32,15 @@ class Population:
         a.generateCode(txt)
         return a
     def getInstructionSkeleton(self):
-        i = []
-        i.append(self.genInstruction("PUSH 1 5"))
-        i.append(self.genInstruction("PUSH 2 5"))
-        i.append(self.genInstruction("PUSH 3 5"))
+        c = 0
+        i = [self.genInstruction("PUSH "+str(c)+" "+str(c)) for j in range(5)]
+
         result = Algorithm(instructions=i)
         return result
     def createPopulation(self,config):
         self.resetPopulation()
         #create random algorithm
-        algorithmSkeleton = self.getInstructionSkeleton()
+        algorithmSkeleton = self.fnskeleton()
 
         for i in range((config.getPopulation())):
             self.getPopulation().append(elementPopulation(algorithmSkeleton))

@@ -20,7 +20,7 @@ class EVAconfig:
         self.setTypeCross(typeCross)
         self.setPopulation(population)
         self.initGlobalConfig()
-        self.setIO(io)
+        self.io = io
     def getInstrucionSkeleton(self):
         return self.instructionSkeleton
     def setIO(self,io):
