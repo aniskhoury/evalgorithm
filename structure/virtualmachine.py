@@ -24,7 +24,7 @@ class VirtualMachine:
         self.codeFunction["01011"] = self.divMemFunction
         self.codeFunction["01111"] = self.pushMemFunction
 
-    def __init__(self,memory=1024,algorithm = None,pc = None):
+    def __init__(self,memory=256,algorithm = None,pc = None):
 
         self.loadFunctions()
         #by default allocate 1024*(32bits)
