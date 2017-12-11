@@ -7,7 +7,7 @@ class VirtualMachine:
     result = 0
     output = ""
     codeFunction = {}
-
+    lenghtMemory = 64
     def loadFunctions(self):
 
         self.codeFunction["00000"] = self.addInmFunction
@@ -24,7 +24,7 @@ class VirtualMachine:
         self.codeFunction["01011"] = self.divMemFunction
         self.codeFunction["01111"] = self.pushMemFunction
 
-    def __init__(self,memory=256,algorithm = None,pc = None):
+    def __init__(self,memory=64,algorithm = None,pc = None):
 
         self.loadFunctions()
         #by default allocate 1024*(32bits)
@@ -33,6 +33,7 @@ class VirtualMachine:
             self.setMemory(list())
         else:
             self.setMemory([0]*memory)
+            self.lenghtMemory = memory
         if algorithm == None:
             self.setPc(-1)
     def getResult(self):
@@ -88,7 +89,7 @@ class VirtualMachine:
     def resetRun(self):
         self.setPc(-1)
         self.setResult(0)
-        self.setMemory([0] * 1024)
+        self.setMemory([0] * self.lenghtMemory)
     #By default, the start is -1
     #first increase the PC, then read the instruction
     def setPc(self,pc):
@@ -112,7 +113,6 @@ class VirtualMachine:
     ########################################
     #Utilities for VirtualMachine
     def resetTest(self):
-        self.setResult(0)
         self.setOutput("")
     def binToDec(self,s):
         return int(s,2)*1.0

@@ -23,9 +23,9 @@ def myFitness(param):
         sumVector= 0
         #calculate the 5 variables
         for i in range(5):
-            #sumVector= (float(mem[0])/mem[(i*2)+1]*inputExperiment[i])
+            sumVector= (float(mem[0])/mem[(i*2)+1]*inputExperiment[i])
             #sumVector += (1/float(mem[i])) * inputExperiment[i]
-            sumVector += float(str("0."+str(mem[i]))) * inputExperiment[i]
+            #sumVector += float(str("0."+str(mem[i]))) * inputExperiment[i]
         #cas grup x*pes >=1
         if result == 1:
             if sumVector >=1:
@@ -163,7 +163,6 @@ for element in vectorNormEng:
 
 # io.addTest([162,57],"",0)
 # io.addTest([162,57],"",0)
-
 
 
 configuration = EVAconfig(io, numGenerations=1000, numVirtualMachines=1, typeCross=0, population=50)
