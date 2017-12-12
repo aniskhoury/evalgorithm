@@ -132,9 +132,11 @@ def startVowel(t):
 #detect english & catalan text
 catalaWords = open('catala.txt').read()
 englishWords = open('english.txt').read()
+spanishWords = open('spanish.txt').read()
 
 cleanCatala = cleanText(catalaWords)
 cleanEnglish = cleanText(englishWords)
+cleanSpanish = cleanText(spanishWords)
 vectorCatala= generateVectorTmodel1(cleanCatala)
 vectorEnglish= generateVectorTmodel1(cleanEnglish)
 vectorNormCat =  normalizeVectorT(vectorCatala)
