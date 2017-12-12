@@ -107,7 +107,7 @@ def normalizeVectorT(vector):
 
     return normalizedVector
 #generateVectorTest
-def generateVectorT(data):
+def generateVectorTmodel1(data):
     words = data.split(" ")
     vector = []
     for word in words:
@@ -135,8 +135,8 @@ englishWords = open('english.txt').read()
 
 cleanCatala = cleanText(catalaWords)
 cleanEnglish = cleanText(englishWords)
-vectorCatala= generateVectorT(cleanCatala)
-vectorEnglish= generateVectorT(cleanEnglish)
+vectorCatala= generateVectorTmodel1(cleanCatala)
+vectorEnglish= generateVectorTmodel1(cleanEnglish)
 vectorNormCat =  normalizeVectorT(vectorCatala)
 vectorNormEng = normalizeVectorT(vectorEnglish)
 
