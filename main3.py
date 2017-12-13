@@ -33,8 +33,6 @@ def myFitness(param):
         return 0
 
 
-logFile = "log.txt"
-logging.basicConfig(filename=logFile, level=logging.INFO)
 
 
 # #simulation.init()  # Optatiu simulation.init(Population=la_poblacio_dessitjada_per_repetir_experiment)

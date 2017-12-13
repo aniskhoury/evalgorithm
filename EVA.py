@@ -99,13 +99,14 @@ class EVA:
         print("Best:")
         #self.getPopulation().getElements()[0].showElement()
         print("Code ASM")
-        self.getPopulation().getElements()[0].getAlgorithm().algoToASM()
+        self.getBest().algoToASM()
     def showAllPopulation(self):
         print("#################################")
         print("######## Show Population ########")
         print("#################################")
         popu = self.getPopulation().showAll()
-
+    def getBestAlgorithm(self):
+        return self.getPopulation().getElements()[0].getAlgorithm()
 
     def getConfig(self):
         return self.config
