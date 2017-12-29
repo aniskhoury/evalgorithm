@@ -1,81 +1,25 @@
-DEBUG = True
+# -*- coding: utf-8 -*-
+DEBUG = False
 
 from EVA import *
 from structure.io import *
-import logging
-import math
+from features import *
 from structure.virtualmachine import *
+#generate 10 instructions
+ins = [Instruction() for i in range(10)]
 
-def myFitness(mem, output, result,simulOutput, simResult):
-    score = 0
-    # fer la comprovacio desitjada
-    diffSqrt = (simResult - result)**2
-    return 1 / (1 + diffSqrt)
-
-logFile = "log.txt"
-logging.basicConfig(filename=logFile, level=logging.INFO)
+ins[0].generateCode("PUSH 0 3")
+ins[1].generateCode("PUSH 1 2")
+ins[2].generateCode("ANDmem 0 0 1")
 
 
-# #simulation.init()  # Optatiu simulation.init(Population=la_poblacio_dessitjada_per_repetir_experiment)
-# simulation.run()
-# simulation.showResults()
-#addi 4
-i = []
-a = Instruction()
-a.generateCode("ADDarg 0")
-i.append(a)
-a.showInfo()
-b = Instruction()
+algo = Algorithm(instructions=ins)
+virtualm = VirtualMachine(64)
+virtualm.loadAlgorithm(algo)
+print ins[0].toASM()
+print ins[1].toASM()
+print ins[2].toASM()
 
-b.generateCode("ADDarg 1")
-i.append(b)
-b.showInfo()
-al = Algorithm(instructions = i)
-io = IO()
-io.addTest([5, 10, 15, 20],"15",300)
-io.addTest([4,9,14,19],"13",247)
-io.addTest([5, 12, 15, 20],"15",340)
-
-
-#Param:
-# fnFitness -> function fitness
-# fnCross -> function cross
-# Population will create elements specificated in EVAconfig
-# with population param
-# simulation = EVA(configuration, fnFitness=myFitness,fnCross=None,population=None)
-
-
-configuration = EVAconfig(io, numGenerations=5000, numVirtualMachines=1, typeCross=0, population=100)
-simulation = EVA(configuration, fnFitness=myFitness)
-simulation.run()
-simulation.showResults()
-simulation.showBest()
-
-
-
-exit()
-simulation = EVA(configuration, fnFitness=myFitness,population=pop)
-
-simulation.run()
-simulation.showResults()
-simulation.showAllPopulation()
-
-
-
-#
-#
-# virtualMach = VirtualMachine(memory=512)
-# virtualMach.loadAlgorithm(al)
-# if virtualMach.runAlgorithm([5, 10, 15, 20]) == False:
-#     print("Error algorithm")
-# else:
-#     print(virtualMach.getResult())
-
-###Example instruction
-a = Instruction()
-a.generateCode("ADDarg 0")
-#Or you can assign code to instruction with
-a.setCode(a.getCode())
-#Or by constructor
-a = Instruction(code="0"*32)
+virtualm.runAlgorithm([])
+print virtualm.getMemory()
 

@@ -78,8 +78,7 @@ io.addTest([0.919354839,0.856060606],"",1)
 
 
 
-configuration = EVAconfig(io, numGenerations=1000, numVirtualMachines=1, typeCross=0, population=50)
+configuration = EVAconfig(io, numGenerations=800, numVirtualMachines=1, typeCross=0, population=50)
 simulation = EVA(configuration, fnFitness=myFitness,population=None,funcSkeleton=mySkeleton)
-simulation.run(success=0.99)
-simulation.showResults()
-simulation.showBest()
+algorithm = simulation.run(success=0.99)
+algorithm.algoToASM()

@@ -92,13 +92,66 @@ class Instruction:
             text = "MEMdiv "
 
         elif cmd == "01111":
-            text = "PUSH " + str(int(self.readNextBits(5),2)) +" "+ str(int(self.readNextBits(23),2))
+            text = "PUSH "+ str(int(self.readNextBits(14),2))+" "+ str(int(self.readNextBits(13),2))
 
-            def toASMArgTxt(self):
-                return str(int(self.readNextBits(27), 2))
+        elif cmd == "10000":
+            text = "XORmem " + str(int(self.readNextBits(9),2))+" "
+            text = text +" "+ str(int(self.readNextBits(9),2)) +","+ str(int(self.readNextBits(9),2))
+        elif cmd == "10001":
+            text = "ANDmem " + str(int(self.readNextBits(9),2))+" "
+            text = text +" "+ str(int(self.readNextBits(9),2)) +","+ str(int(self.readNextBits(9),2))
+        elif cmd == "10010":
+            text = "NOTmem " + str(int(self.readNextBits(9),2))+" "
+            text = text +" "+ str(int(self.readNextBits(9),2)) +","+ str(int(self.readNextBits(9),2))
+        elif cmd == "10011":
+            dest = str(int(self.readNextBits(9),2))
+            m1 = str(int(self.readNextBits(9),2))
+            m2 = str(int(self.readNextBits(9),2))
+            text = "ORmem " + dest+" "+ m1 + ","+m2
+
         if text != "":
-            return text + self.toASMArgTxt()
+            return text
         return "Unknown instruction"
+
+    def toASMArgTxt(self):
+        return str(int(self.readNextBits(27), 2))
+
+    def getBinLogicOper2(self,dest, mem1, mem2):
+        des = str(bin(int(dest))[2:])
+        m1 = str(bin(int(mem1))[2:])
+        m2 = str(bin(int(mem2))[2:])
+        result = "" + des
+        c = len(des)
+        while c < 9:
+            result = "0" + result
+            c = c + 1
+        c = len(m1)
+        result = result + m1
+        while c < 9:
+            result = "0" + result
+            c = c + 1
+        c = len(m2)
+        result = result + m2
+        while c < 9:
+            result = "0" + result
+            c = c + 1
+        return result
+    def getBinLogicOper1(self,dest, mem1):
+        des = str(bin(int(dest))[2:])
+        m1 = str(bin(int(mem1))[2:])
+        result = "" + des
+        c = len(des)
+        while c < 9:
+            result = "0" + result
+            c = c + 1
+        c = len(m1)
+        result = result + m1
+        while c < 18:
+            result = "0" + result
+            c = c + 1
+
+
+        return result
     def generateCode(self,s):
         data = s.split()
         if len(data)> 1:
@@ -145,8 +198,33 @@ class Instruction:
                     code = code + list("01011") + list(str(self.getBinNumArgs(data[1])))
                     self.setCode(list(map(int,code)))
                 if cmd == "PUSH":
-                    code = code + list("01111") + list(str(self.getBinNumArgs(data[1],padding=27))) + list(str(self.getBinNumArgs(data[1],padding=10)))
+                    dest = str(bin(int(data[1]))[2:])
+                    num = str(bin(int(data[2]))[2:])
+                    c = len(dest)
+                    while c < 14:
+                        dest = "0"+dest
+                        c = c+1
+                    c = len(num)
+                    while c < 13:
+                        num = "0"+num
+                        c = c+1
+                    code = code + list("01111")+list(dest)+list(num)
+                    self.setCode(list(map(int,code)))
+
+                if cmd == "XORmem":
+                    code = code + list("10000") +list(self.getBinLogicOper2(data[1],data[2],data[3]))
                     self.setCode(code)
+                if cmd == "ANDmem":
+                    code = code + list("10001") +list(self.getBinLogicOper2(data[1],data[2],data[3]))
+                    self.setCode(code)
+                if cmd == "NOTmem":
+                    code = code + list("10010") + list(self.getBinLogicOper1(data[1],data[2]))
+                    self.setCode(code)
+                if cmd == "ORmem":
+                    c = list(self.getBinLogicOper2(data[1],data[2],data[3]))
+                    code = code + list("10011") +c
+                    self.setCode(code)
+
 
     def resetCursor(self):
         self.cursor = 0

@@ -99,7 +99,7 @@ class EVA:
         print("Best:")
         #self.getPopulation().getElements()[0].showElement()
         print("Code ASM")
-        self.getBest().algoToASM()
+        print self.getBest().algoToASM()
     def showAllPopulation(self):
         print("#################################")
         print("######## Show Population ########")
@@ -143,9 +143,9 @@ class EVA:
             print("Actual best with score ",self.getBest().getScore())
             if self.getBest().getScore() >=success:
                 print("Found solution with score",self.getBest().getScore())
-                return
+                return self.getBest().getAlgorithm()
             self.nextPopulation()
-
+            self.orderPopu()
             #choose accurate fitness value and stop if it pass
     def setCurrentGen(self,s):
         self.currentGen = s

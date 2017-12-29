@@ -8,6 +8,7 @@ class VirtualMachine:
     output = ""
     codeFunction = {}
     lenghtMemory = 64
+    numBitsCodeFunction = 5
     def loadFunctions(self):
 
         self.codeFunction["00000"] = self.addInmFunction
@@ -23,6 +24,12 @@ class VirtualMachine:
         self.codeFunction["01010"] = self.mulMemFunction
         self.codeFunction["01011"] = self.divMemFunction
         self.codeFunction["01111"] = self.pushMemFunction
+        self.codeFunction["10000"] = self.xorMemFunction
+        self.codeFunction["10001"] = self.andMemFunction
+        self.codeFunction["10010"] = self.notMemFunction
+        self.codeFunction["10011"] = self.orMemFunction
+
+
 
     def __init__(self,memory=64,algorithm = None,pc = None):
 
@@ -67,9 +74,8 @@ class VirtualMachine:
 
         return True
     def computeInstruction(self,instruction,input):
-        numBitsCode = 5
         instruction.resetCursor()
-        code = instruction.readNextBits(numBitsCode)
+        code = instruction.readNextBits(self.numBitsCodeFunction)
         #check code of instruction and compute it
         #store result of compute instruction in ret
         ret = False
@@ -126,13 +132,30 @@ class VirtualMachine:
             return input[num]
         else:
             return False
+
     def readInmediateInmArgs(self,instruction,input):
         #32 bits - 5 code = 27 bits
         number = instruction.readNextBits(27)
         number = int(self.binToDec(number))
         return number
+
     def readMemValues(self,i):
         return int(i.readNextBits(27),2)
+
+    def logicGate2Input(self,instruction):
+        memDest = int(instruction.readNextBits(9))
+        memGate1 = int(instruction.readNextBits(9))
+        memGate2 = int(instruction.readNextBits(9))
+
+        return memDest,memGate1,memGate2
+
+    def logicGate1Input(self, instruction):
+        memDest = int(instruction.readNextBits(9))
+        memGate1 = int(instruction.readNextBits(18))
+
+        return memDest, memGate1
+
+
     ########################################
 
 
@@ -141,16 +164,19 @@ class VirtualMachine:
         number = self.readInmediateInmArgs(instruction,input)
         self.setResult(res+number)
         return True
+
     def subInmFunction(self,instruction,input):
         res = self.getResult()
         number = self.readInmediateInmArgs(instruction,input)
         self.setResult(res-number)
         return True
+
     def mulInmFunction(self,instruction,input):
         res = self.getResult()
         number = self.readInmediateInmArgs(instruction,input)
         self.setResult(res*number)
         return True
+
     def divInmFunction(self,instruction,input):
         res = self.getResult()
         number = self.readInmediateInmArgs(instruction,input)
@@ -237,13 +263,42 @@ class VirtualMachine:
         except IndexError:
             return False
         return True
-    def pushMemFunction(self,instruction, input):
-        res = self.getResult()
-        addr = int(instruction.readNextBits(5),2)
-        num = int(instruction.readNextBits(23),2)
 
+    def pushMemFunction(self,instruction, input):
+        addr = int(instruction.readNextBits(14),2)
+        num = int(instruction.readNextBits(13),2)
         try:
             self.memory[addr] = num
+        except IndexError:
+            return False
+        return True
+
+    def andMemFunction(self,instruction,input):
+        dest,mem1,mem2 = self.logicGate2Input(instruction)
+        try:
+            self.memory[dest] = self.memory[mem1] & self.memory[mem2]
+        except IndexError:
+            return False
+        return True
+    def xorMemFunction(self,instruction,input):
+        dest,mem1,mem2 = self.logicGate2Input(instruction)
+        try:
+            self.memory[dest] = self.memory[mem1] ^ self.memory[mem2]
+        except IndexError:
+            return False
+        return True
+
+    def orMemFunction(self,instruction,input):
+        dest,mem1,mem2 = self.logicGate2Input(instruction)
+        try:
+            self.memory[dest] = self.memory[mem1] | self.memory[mem2]
+        except IndexError:
+            return False
+        return True
+    def notMemFunction(self,instruction,input):
+        dest,mem1 = self.logicGate1Input(instruction)
+        try:
+            self.memory[dest] = ~self.memory[mem1]
         except IndexError:
             return False
         return True

@@ -29,8 +29,7 @@ class Algorithm:
 
     def algoToASM(self):
         for instruction in self.getInstructions():
-            insASM = instruction.toASM()
-            print(insASM)
+            print instruction.toASM()
     def addInstruction(self,i):
         self.getInstructions().append(i)
     def copyBitInstructionWithMut(self,bitA,bitB,probMut):
