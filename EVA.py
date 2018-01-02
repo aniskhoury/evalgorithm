@@ -68,30 +68,36 @@ class EVA:
             algo = self.getPopulation().getElements()[element].getAlgorithm()
             virMachine.loadAlgorithm(algo)
             fitness = 0.0
-            c = 0.0
-            numTest = 0
             totalTest = len(iosim.getInput())
-            for n in range(totalTest):
-
+            #for n in range(totalTest):
+            c = 0
+            for i in iosim.getInput():
+            #    print i
                 virMachine.resetRun()
                 virMachine.resetTest()
-                virMachine.runAlgorithm(iosim.getInput()[n])
+                virMachine.runAlgorithm(i)
                 param = {}
                 param["mem"] = virMachine.getMemory()
-                param["resultExpected"] =  iosim.getResult()[n]
-                param["outputExpected"] =  iosim.getOutput()[n]
-                param["input"] = iosim.getInput()[n]
+                param["resultExpected"] =  iosim.getResult()[c]
+                param["outputExpected"] =  iosim.getOutput()[c]
+                param["input"] = i
 
                 param["output"] =  str(self.getVirtualMachines()[0].getOutput())
                 param["resultVir"] =  float(self.getVirtualMachines()[0].getResult())
                 param["algorithm"] = algo
-
+                c = c+1
 
                 temp= self.fnFitness(param)
                 fitness = fitness + temp
 
+
+
             try:
-                #print "Total score:",fitness/c
+                fitness = 0.0
+                for i in iosim.getInput():
+                    virMachine.runAlgorithm(i)
+                    fitness = fitness + temp
+
                 self.getPopulation().getElements()[element].setScore(fitness/totalTest)
             except ZeroDivisionError:
                 return -1

@@ -9,7 +9,7 @@ from structure.virtualmachine import *
 def mySkeleton():
     ins = [Instruction() for i in range(10)]
 
-    ins[0].generateCode("PUTmemarg 0 0")
+    ins[0].generateCode("PUTmemarg 0 1")
     ins[1].generateCode("PUTmemarg 1 1")
     ins[2].generateCode("ANDmem 2 1 0")
     ins[3].generateCode("NOTmem 2 2")
@@ -68,11 +68,8 @@ def fitCircuit(param):
     result = param["resultExpected"]
     #print mem,result,input
     #print type(mem[2]),type(result)
-    print result,input,mem
     if mem[2] == result:  # el resultat de 0x0002 correspon a la Y de la taula veritat?
-        print "ok"
         return 1  # El resultat esperat es equivalent al trobat per l’algorisme
-    print "fail"
     return 0  # El resultat de la simulació de l’algorisme no coincideix amb la Y esperada
 
 
@@ -94,5 +91,5 @@ io.addTest([1,1],"",0)
 
 configuration = EVAconfig(io, numGenerations=800, numVirtualMachines=1, typeCross=0, population=50)
 simulation = EVA(configuration, fnFitness=fitCircuit,population=None,funcSkeleton=mySkeleton)
-algorithm = simulation.run(success=0.74)
+algorithm = simulation.run(success=0.95)
 algorithm.algoToASM()

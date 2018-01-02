@@ -104,7 +104,7 @@ class Instruction:
             text = "ANDmem " + dest+" "+ m1 +","+ m2
         elif cmd == "10010":
             text = "NOTmem " + str(int(self.readNextBits(9),2))+" "
-            text = text +" "+ str(int(self.readNextBits(9),2)) +","+ str(int(self.readNextBits(9),2))
+            text = text +" "+ str(int(self.readNextBits(18),2))
         elif cmd == "10011":
             dest = str(int(self.readNextBits(9),2))
             m1 = str(int(self.readNextBits(9),2))
