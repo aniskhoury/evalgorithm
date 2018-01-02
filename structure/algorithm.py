@@ -57,8 +57,14 @@ class Algorithm:
         codeRes = ""
         #mutation prob
         prob = 2
-        for i in range(maxBits):
-            codeRes = codeRes + self.copyBitInstructionWithMut(i1.getCode()[i],i2.getCode()[i],prob)
+        if maxBits > 32:
+            maxBits = 32
+        try:
+            for i in range(maxBits):
+                codeRes = codeRes + self.copyBitInstructionWithMut(i1.getCode()[i],i2.getCode()[i],prob)
+        except IndexError:
+            for i in range(32):
+                codeRes = codeRes + str(random.randint(0, 1))
         lenCode = len(codeRes)
         #complete code (if too much delete mutation occur
         #can break 32 bits instruction

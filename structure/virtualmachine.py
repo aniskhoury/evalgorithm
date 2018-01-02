@@ -28,6 +28,7 @@ class VirtualMachine:
         self.codeFunction["10001"] = self.andMemFunction
         self.codeFunction["10010"] = self.notMemFunction
         self.codeFunction["10011"] = self.orMemFunction
+        self.codeFunction["10100"] = self.putMemArg
 
 
 
@@ -143,15 +144,15 @@ class VirtualMachine:
         return int(i.readNextBits(27),2)
 
     def logicGate2Input(self,instruction):
-        memDest = int(instruction.readNextBits(9))
-        memGate1 = int(instruction.readNextBits(9))
-        memGate2 = int(instruction.readNextBits(9))
+        memDest = int(instruction.readNextBits(9),2)
+        memGate1 = int(instruction.readNextBits(9),2)
+        memGate2 = int(instruction.readNextBits(9),2)
 
         return memDest,memGate1,memGate2
 
     def logicGate1Input(self, instruction):
-        memDest = int(instruction.readNextBits(9))
-        memGate1 = int(instruction.readNextBits(18))
+        memDest = int(instruction.readNextBits(9),2)
+        memGate1 = int(instruction.readNextBits(18),2)
 
         return memDest, memGate1
 
@@ -298,7 +299,25 @@ class VirtualMachine:
     def notMemFunction(self,instruction,input):
         dest,mem1 = self.logicGate1Input(instruction)
         try:
-            self.memory[dest] = ~self.memory[mem1]
+            bits = bin(self.memory[dest])[2:]
+            c = ""
+            #loop for negation. ~ with integer numbers in python
+            #can produce negative numbers
+            for i in str(bits):
+                if i == "0":
+                    c = "1"
+                else:
+                    c = "0"
+            self.memory[dest] = int(c,2)
+        except IndexError:
+            return False
+        return True
+    def putMemArg(self,instruction,input):
+        try:
+            dest = int(instruction.readNextBits(18),2)
+            arg = int(instruction.readNextBits(9),2)
+            self.memory[dest] = input[arg]
+
         except IndexError:
             return False
         return True

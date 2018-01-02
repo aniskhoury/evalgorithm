@@ -68,33 +68,33 @@ class EVA:
             algo = self.getPopulation().getElements()[element].getAlgorithm()
             virMachine.loadAlgorithm(algo)
             fitness = 0.0
-            c = 0
+            c = 0.0
+            numTest = 0
+            totalTest = len(iosim.getInput())
+            for n in range(totalTest):
 
-            for testInput in iosim.getInput():
                 virMachine.resetRun()
                 virMachine.resetTest()
-                if virMachine.runAlgorithm(testInput):
-                    param = {}
-                    param["mem"] = virMachine.getMemory()
-                    param["resultExpected"] =  iosim.getResult()[c]
-                    param["outputExpected"] =  iosim.getOutput()[c]
-                    param["output"] =  str(self.getVirtualMachines()[0].getOutput())
-                    param["resultVir"] =  float(self.getVirtualMachines()[0].getResult())
-                    param["algorithm"] = algo
-                    param["input"] = testInput
+                virMachine.runAlgorithm(iosim.getInput()[n])
+                param = {}
+                param["mem"] = virMachine.getMemory()
+                param["resultExpected"] =  iosim.getResult()[n]
+                param["outputExpected"] =  iosim.getOutput()[n]
+                param["input"] = iosim.getInput()[n]
+
+                param["output"] =  str(self.getVirtualMachines()[0].getOutput())
+                param["resultVir"] =  float(self.getVirtualMachines()[0].getResult())
+                param["algorithm"] = algo
 
 
-                    temp= self.fnFitness(param)
-                    fitness = fitness + temp
-                    c = c +1
-                else:
-                    fitness = -1
-                    break
+                temp= self.fnFitness(param)
+                fitness = fitness + temp
 
-            if fitness == -1:
-                self.getPopulation().getElements()[element].setScore(-1)
-            else:
-                self.getPopulation().getElements()[element].setScore(fitness/c)
+            try:
+                #print "Total score:",fitness/c
+                self.getPopulation().getElements()[element].setScore(fitness/totalTest)
+            except ZeroDivisionError:
+                return -1
     def showBest(self):
         print("Best:")
         #self.getPopulation().getElements()[0].showElement()

@@ -98,8 +98,10 @@ class Instruction:
             text = "XORmem " + str(int(self.readNextBits(9),2))+" "
             text = text +" "+ str(int(self.readNextBits(9),2)) +","+ str(int(self.readNextBits(9),2))
         elif cmd == "10001":
-            text = "ANDmem " + str(int(self.readNextBits(9),2))+" "
-            text = text +" "+ str(int(self.readNextBits(9),2)) +","+ str(int(self.readNextBits(9),2))
+            dest = str(int(self.readNextBits(9),2))
+            m1 = str(int(self.readNextBits(9),2))
+            m2 = str(int(self.readNextBits(9),2))
+            text = "ANDmem " + dest+" "+ m1 +","+ m2
         elif cmd == "10010":
             text = "NOTmem " + str(int(self.readNextBits(9),2))+" "
             text = text +" "+ str(int(self.readNextBits(9),2)) +","+ str(int(self.readNextBits(9),2))
@@ -108,50 +110,36 @@ class Instruction:
             m1 = str(int(self.readNextBits(9),2))
             m2 = str(int(self.readNextBits(9),2))
             text = "ORmem " + dest+" "+ m1 + ","+m2
-
+        elif cmd == "10100":
+            dest = str(int(self.readNextBits(18),2))
+            arg = str(int(self.readNextBits(9),2))
+            text = "PUTmemarg "+dest+ ","+arg
         if text != "":
             return text
         return "Unknown instruction"
 
     def toASMArgTxt(self):
         return str(int(self.readNextBits(27), 2))
-
+    def paddLen(self,s,tamany):
+        c = tamany-len(s)
+        result = s
+        n = 0
+        while n < c:
+            result = "0"+result
+            n = n +1
+        return result
     def getBinLogicOper2(self,dest, mem1, mem2):
-        des = str(bin(int(dest))[2:])
-        m1 = str(bin(int(mem1))[2:])
-        m2 = str(bin(int(mem2))[2:])
-        result = "" + des
-        c = len(des)
-        while c < 9:
-            result = "0" + result
-            c = c + 1
-        c = len(m1)
-        result = result + m1
-        while c < 9:
-            result = "0" + result
-            c = c + 1
-        c = len(m2)
-        result = result + m2
-        while c < 9:
-            result = "0" + result
-            c = c + 1
-        return result
+        res = str(bin(int(dest))[2:])
+        res1 = str(bin(int(mem1))[2:])
+        res2 = str(bin(int(mem2))[2:])
+
+        return self.paddLen(res,9)+self.paddLen(res1,9)+self.paddLen(res2,9)
     def getBinLogicOper1(self,dest, mem1):
-        des = str(bin(int(dest))[2:])
-        m1 = str(bin(int(mem1))[2:])
-        result = "" + des
-        c = len(des)
-        while c < 9:
-            result = "0" + result
-            c = c + 1
-        c = len(m1)
-        result = result + m1
-        while c < 18:
-            result = "0" + result
-            c = c + 1
+        res = str(bin(int(dest))[2:])
+        res1 = str(bin(int(mem1))[2:])
+        return self.paddLen(res,9)+self.paddLen(res1,9)
 
 
-        return result
     def generateCode(self,s):
         data = s.split()
         if len(data)> 1:
@@ -224,8 +212,19 @@ class Instruction:
                     c = list(self.getBinLogicOper2(data[1],data[2],data[3]))
                     code = code + list("10011") +c
                     self.setCode(code)
-
-
+                if cmd == "PUTmemarg":
+                    dest = str(bin(int(data[1]))[2:])
+                    arg = str(bin(int(data[2]))[2:])
+                    c = len(dest)
+                    while c < 18:
+                        dest = "0"+dest
+                        c = c+1
+                    c = len(arg)
+                    while c < 9:
+                        arg = "0"+arg
+                        c = c+1
+                    code = code + list("10100")+list(dest)+list(arg)
+                    self.setCode(code)
     def resetCursor(self):
         self.cursor = 0
     def generateRandomCode(self,bits=32):
