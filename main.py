@@ -10,7 +10,7 @@ ins = [Instruction() for i in range(10)]
 ins[0].generateCode("PUTmemarg 0 0")
 ins[1].generateCode("PUTmemarg 1 1")
 ins[2].generateCode("ANDmem 2 1 0")
-ins[3].generateCode("NOTmem 2 2")
+ins[3].generateCode("NOTmem 4 2")
 
 
 

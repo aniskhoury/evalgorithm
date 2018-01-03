@@ -6,7 +6,7 @@ from operator import attrgetter
 
 import math
 
-DEBUG = True
+DEBUG = False
 class EVA:
     virtualMachines = []
     config = None
@@ -58,11 +58,11 @@ class EVA:
         return self.population
     def getBest(self):
         return self.getPopulation().getElements()[0].getAlgorithm()
-    def runSimAllAlgorithm(self):
+    def runSimAllAlgorithm(self,success=0.7):
         virMachine = self.getVirtualMachines()[0]
         iosim = self.getConfig().getIO()
         popu = self.getPopulation()
-
+        fitness = 0.0
         for element in range(len(popu.getElements())):
             #Algorithm was stored in elementPopulation
             algo = self.getPopulation().getElements()[element].getAlgorithm()
@@ -72,7 +72,6 @@ class EVA:
             #for n in range(totalTest):
             c = 0
             for i in iosim.getInput():
-            #    print i
                 virMachine.resetRun()
                 virMachine.resetTest()
                 virMachine.runAlgorithm(i)
@@ -88,19 +87,13 @@ class EVA:
                 c = c+1
 
                 temp= self.fnFitness(param)
+
                 fitness = fitness + temp
 
-
-
             try:
-                fitness = 0.0
-                for i in iosim.getInput():
-                    virMachine.runAlgorithm(i)
-                    fitness = fitness + temp
-
-                self.getPopulation().getElements()[element].setScore(fitness/totalTest)
+                self.getPopulation().getElements()[element].setScore(fitness/c)
             except ZeroDivisionError:
-                return -1
+                self.getPopulation().getElements()[element].setScore(0.0)
     def showBest(self):
         print("Best:")
         #self.getPopulation().getElements()[0].showElement()
@@ -123,8 +116,8 @@ class EVA:
     def showPopuScore(self):
         popu = self.getPopulation().getElements()
         for i in popu:
-            i.showElement()
-
+            i.getAlgorithm().algoToASM()
+            print "score---->",i.getScore()
     def nextPopulation(self):
         oldPopu = self.getPopulation().getElements()
 
@@ -143,10 +136,19 @@ class EVA:
         for generation in range(self.getConfig().getNumGenerations()):
             self.setCurrentGen(generation)
             print("Starting generation ",self.getCurrentGen())
-            self.runSimAllAlgorithm()
-            #order by score
+            self.runSimAllAlgorithm(success=success)
             self.orderPopu()
-            print("Actual best with score ",self.getBest().getScore())
+            #self.showPopuScore()
+            #order by score
+            bestScore = self.getBest().getScore()
+            resultRun = self.runSimAllAlgorithm(success=success)
+            if resultRun == False:
+                print("Found solution with score",resultRun[2])
+                return resultRun[1]
+            bestScore = float(self.getBest().getScore())
+            print "Actual best with score ",bestScore
+
+
             if self.getBest().getScore() >=success:
                 print("Found solution with score",self.getBest().getScore())
                 return self.getBest().getAlgorithm()

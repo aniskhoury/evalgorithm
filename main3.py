@@ -10,9 +10,9 @@ def mySkeleton():
     ins = [Instruction() for i in range(10)]
 
     ins[0].generateCode("PUTmemarg 0 1")
-    ins[1].generateCode("PUTmemarg 1 1")
+    ins[1].generateCode("PUTmemarg 1 0")
     ins[2].generateCode("ANDmem 2 1 0")
-    ins[3].generateCode("NOTmem 2 2")
+    ins[3].generateCode("NOTmem 2 4")
 
     result = Algorithm(instructions=ins)
     return result
@@ -89,7 +89,7 @@ io.addTest([1,1],"",0)
 
 
 
-configuration = EVAconfig(io, numGenerations=800, numVirtualMachines=1, typeCross=0, population=50)
+configuration = EVAconfig(io, numGenerations=800, numVirtualMachines=1, typeCross=0, population=200)
 simulation = EVA(configuration, fnFitness=fitCircuit,population=None,funcSkeleton=mySkeleton)
-algorithm = simulation.run(success=0.95)
+algorithm = simulation.run(success=0.9)
 algorithm.algoToASM()

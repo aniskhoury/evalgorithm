@@ -299,7 +299,7 @@ class VirtualMachine:
     def notMemFunction(self,instruction,input):
         dest,mem1 = self.logicGate1Input(instruction)
         try:
-            bits = bin(self.memory[dest])[2:]
+            bits = bin(self.memory[mem1])[2:]
             c = ""
             #loop for negation. ~ with integer numbers in python
             #can produce negative numbers
