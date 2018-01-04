@@ -12,7 +12,7 @@ def mySkeleton():
     ins[0].generateCode("PUTmemarg 0 1")
     ins[1].generateCode("PUTmemarg 1 0")
     ins[2].generateCode("ANDmem 2 1 0")
-    ins[3].generateCode("NOTmem 2 2")
+    ins[3].generateCode("NOTmem 2 4")
 
     result = Algorithm(instructions=ins)
     return result

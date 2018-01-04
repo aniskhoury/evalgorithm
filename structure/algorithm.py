@@ -36,7 +36,7 @@ class Algorithm:
         #choose between bitA and bitB
         bits = [bitA,bitB]
         res = str(bits[random.randint(0,1)])
-        n = random.randint(1, 100)
+        n = random.randint(1, 200)
         # mutation happend
         if n <= probMut:
             # type mutation
