@@ -122,12 +122,13 @@ class EVA:
         oldPopu = self.getPopulation().getElements()
 
         popu = Population()
+        #save always the best criature
         popu.addElementPopu(oldPopu[0])
         numAlgorithms = self.getConfig().getPopulation()
         for i in range(numAlgorithms-1):
             indexAlgo1 = random.randint(0,numAlgorithms-1)
             indexAlgo2 = random.randint(0,numAlgorithms-1)
-            child = oldPopu[indexAlgo1].getAlgorithm().cross(oldPopu[indexAlgo2].getAlgorithm())
+            child = oldPopu[0].getAlgorithm().cross(oldPopu[indexAlgo2].getAlgorithm())
             popu.addElementPopu(elementPopulation(algorithm=child))
         self.setPopulation(popu)
     def getBest(self):
@@ -141,19 +142,13 @@ class EVA:
             #self.showPopuScore()
             #order by score
             bestScore = self.getBest().getScore()
-            resultRun = self.runSimAllAlgorithm(success=success)
-            if resultRun == False:
-                print("Found solution with score",resultRun[2])
-                return resultRun[1]
-            bestScore = float(self.getBest().getScore())
-            print "Actual best with score ",bestScore
-
-
+            self.runSimAllAlgorithm(success=success)
+            print("Actual best score:", self.getBest().getScore())
+            self.getBest().getAlgorithm().algoToASM()
             if self.getBest().getScore() >=success:
                 print("Found solution with score",self.getBest().getScore())
                 return self.getBest().getAlgorithm()
             self.nextPopulation()
-            self.orderPopu()
             #choose accurate fitness value and stop if it pass
     def setCurrentGen(self,s):
         self.currentGen = s

@@ -56,7 +56,7 @@ class Algorithm:
         maxBits = i1.getMaxLenghtBits()
         codeRes = ""
         #mutation prob
-        prob = 2
+        prob = 1
         if maxBits > 32:
             maxBits = 32
         try:
