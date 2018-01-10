@@ -115,9 +115,11 @@ def prepareVector(text):
     #get max value of all vector feature words of text
     maxValue = max([max(featureVector(word)) for word in textFiltered.split()])*1.0
     print maxValue
+    vectorOfText = []
     for word in textFiltered.split():
-        print "without normalize",featureVector(word)," max",max(featureVector(word))
         normalizedVector = [x / maxValue for x in featureVector(word)]
-        print "normalized ",normalizedVector
-
+        vectorOfText.append(normalizedVector)
+    return vectorOfText
 prepareVector("En biologia, l’evolució és el procés de canvi en els trets heretats d’una població d’organismes entre una generació i la següent")
+
+c = open("paraulescastella.txt").read()
