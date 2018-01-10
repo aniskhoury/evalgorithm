@@ -25,6 +25,7 @@ def myFitness(param):
         if mem[2]/mem[3] > 0:
             return 0
         sumVector= (float(mem[0])/mem[1]*inputExperiment[0])+(float(mem[2])/mem[3]*inputExperiment[1])
+
         #cas grup x*pes >=1
         if result == 1:
             if sumVector >=1:
@@ -78,7 +79,7 @@ io.addTest([0.919354839,0.856060606],"",1)
 
 
 
-configuration = EVAconfig(io, numGenerations=800, numVirtualMachines=1, typeCross=0, population=50)
+configuration = EVAconfig(io, numGenerations=800, numVirtualMachines=1, typeCross=0, population=200)
 simulation = EVA(configuration, fnFitness=myFitness,population=None,funcSkeleton=mySkeleton)
 algorithm = simulation.run(success=0.99)
 algorithm.algoToASM()

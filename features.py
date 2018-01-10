@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import itertools
 english = "Directed evolution is a method used in protein engineering that mimics the process of natural selection to evolve proteins or nucleic acids toward a user-defined goal. It consists of subjecting a gene to iterative rounds of mutagenesis (creating a library of variants), selection (expressing the variants and isolating members with the desired function), and amplification (generating a template for the next round). It can be performed in vivo (in living cells), or in vitro (free in solution or microdroplet). Directed evolution is used both for protein engineering as an alternative to rationally designing modified proteins, as well as studies of fundamental evolutionary principles in a controlled, laboratory environment. Combined, 'semi-rational' approaches are being investigated to address the limitations of both rational design and directed evolution. Beneficial mutations are rare, so large numbers of random mutants have to be screened to find improved variants. 'Focussed libraries' concentrate on randomising regions thought to be richer in beneficial mutations for the mutagenesis step of DE. A focussed library contains fewer variants than a traditional random mutagenesis library and so does not require such high-throughput screening. These gas-like ions rapidly interact with ions of opposite charge to give neutral molecules or ionic salts. Ions are also produced in the liquid or solid state when salts interact with solvents (for example, water) to produce solvated ions, which are more stable, for reasons involving a combination of energy and entropy changes as the ions move away from each other to interact with the liquid. These stabilized species are more commonly found in the environment at low temperatures. A common example is the ions present in seawater, which are derived from the dissolved salts."
 
 
@@ -9,12 +10,13 @@ catala = "L'evolució dirigida és un mètode utilitzat en l'enginyeria de prote
 def prepareSampleCat(s):
     result = s.lower()
 
-    listOriginal = ["à", "è", "ì", "ò", "ù", "ï", "á", "é", "í", "ó", "ú", "/", "(", ")", ":", ".", ",", "-", "·"]
-    listResulted = ["a", "e", "i", "o", "u", "i", "a", "e", "i", "o", "u", "", "", "", "", "", "", "", ""]
+    listOriginal = ["à", "è", "ì", "ò", "ù", "ü", "ï", "á", "é", "í", "ó", "ú", "/", "(", ")", ":", ".", ",", "-", "·",'’','\'']
+    listResulted = ["a", "e", "i", "o", "u", "u", "i", "a", "e", "i", "o", "u", "", "", "", "", "", "", "", "","",""]
     for i in range(len(listOriginal)):
         result = result.replace(listOriginal[i], listResulted[i])
 
     return result
+
 
 
 def prepareSampleEn(s):
@@ -99,3 +101,23 @@ def getAllFeatures():
     features += getFeatures(prepareSampleEn(english).split(), 1)
     normalize(features)
     return features
+
+#suposa tamany maxim paraula de 20
+def featureVector(word):
+    featureV = [0]*32
+
+    for position in range(len(word)):
+        #97 is the ascii number "a"
+        featureV[position] = ord(word[position])-96
+    return featureV
+def prepareVector(text):
+    textFiltered = prepareSampleCat(text)
+    #get max value of all vector feature words of text
+    maxValue = max([max(featureVector(word)) for word in textFiltered.split()])*1.0
+    print maxValue
+    for word in textFiltered.split():
+        print "without normalize",featureVector(word)," max",max(featureVector(word))
+        normalizedVector = [x / maxValue for x in featureVector(word)]
+        print "normalized ",normalizedVector
+
+prepareVector("En biologia, l’evolució és el procés de canvi en els trets heretats d’una població d’organismes entre una generació i la següent")
