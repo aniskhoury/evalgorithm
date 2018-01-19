@@ -83,20 +83,35 @@ class Instruction:
         if text != "":
             return text + self.toASMArgTxt()
         if cmd == "01000":
-            text = "MEMadd "
+            dest = str(int(self.readNextBits(9),2))
+            m1 = str(int(self.readNextBits(9),2))
+            m2 = str(int(self.readNextBits(9),2))
+            text = "ADDmem " + dest + " " + m1 + "," + m2
+
         elif cmd == "01001":
-            text = "MEMsub "
+            dest = str(int(self.readNextBits(9),2))
+            m1 = str(int(self.readNextBits(9),2))
+            m2 = str(int(self.readNextBits(9),2))
+            text = "SUBmem " + dest + " " + m1 + "," + m2
         elif cmd == "01010":
-            text = "MEMmul "
+            dest = str(int(self.readNextBits(9),2))
+            m1 = str(int(self.readNextBits(9),2))
+            m2 = str(int(self.readNextBits(9),2))
+            text = "MULmem " + dest + " " + m1 + "," + m2
         elif cmd == "01011":
-            text = "MEMdiv "
+            dest = str(int(self.readNextBits(9),2))
+            m1 = str(int(self.readNextBits(9),2))
+            m2 = str(int(self.readNextBits(9),2))
+            text = "DIVmem " + dest + " " + m1 + "," + m2
 
         elif cmd == "01111":
             text = "PUSH "+ str(int(self.readNextBits(14),2))+" "+ str(int(self.readNextBits(13),2))
 
         elif cmd == "10000":
-            text = "XORmem " + str(int(self.readNextBits(9),2))+" "
-            text = text +" "+ str(int(self.readNextBits(9),2)) +","+ str(int(self.readNextBits(9),2))
+            dest = str(int(self.readNextBits(9),2))
+            m1 = str(int(self.readNextBits(9),2))
+            m2 = str(int(self.readNextBits(9),2))
+            text = "XORmem " + dest + " " + m1 + "," + m2
         elif cmd == "10001":
             dest = str(int(self.readNextBits(9),2))
             m1 = str(int(self.readNextBits(9),2))
@@ -114,6 +129,9 @@ class Instruction:
             dest = str(int(self.readNextBits(18),2))
             arg = str(int(self.readNextBits(9),2))
             text = "PUTmemarg "+dest+ ","+arg
+        elif cmd == "10111":
+            dest = str(int(self.readNextBits(27),2))
+            text = "PUTMemResult " + dest
         if text != "":
             return text
         return "Unknown instruction"
@@ -149,17 +167,16 @@ class Instruction:
                 code = code + list(map(int,cmd))
             except ValueError:
                 if cmd == "ADDi":
-                    code = list()
-                    code = code + list("00000") + list(str(self.getBinNum(data[1],padding=6)))
+                    code = code + list("00000") + list(str(self.getBinNumArgs(data[1])))
                     self.setCode(code)
                 if cmd == "SUBi":
-                    code = code + list("00001") + list(str(self.getBinNum(data[1],padding=6)))
+                    code = code + list("00001") + list(str(self.getBinNumArgs(data[1])))
                     self.setCode(code)
                 if cmd == "MULi":
-                    code = code + list("00010") + list(str(self.getBinNum(data[1],padding=6)))
+                    code = code + list("00010") + list(str(self.getBinNumArgs(data[1])))
                     self.setCode(code)
                 if cmd == "DIVi":
-                    code = code + list("00011") + list(str(self.getBinNum(data[1],padding=6)))
+                    code = code + list("00011") + list(str(self.getBinNumArgs(data[1])))
                     self.setCode(code)
                 if cmd == "ADDarg":
                     code = code + list("00100") + list(str(self.getBinNumArgs(data[1])))
@@ -173,17 +190,20 @@ class Instruction:
                 if cmd == "DIVarg":
                     code = code + list("00111") + list(str(self.getBinNumArgs(data[1])))
                     self.setCode(code)
-                if cmd == "MEMadd":
-                    code = code + list("01000") + list(str(self.getBinNumArgs(data[1])))
+                if cmd == "ADDmem":
+                    code = code + list("01000") +list(self.getBinLogicOper2(data[1],data[2],data[3]))
                     self.setCode(code)
-                if cmd == "MEMsub":
-                    code = code + list("01001") + list(str(self.getBinNumArgs(data[1])))
+                if cmd == "SUBmem":
+                    code = code + list("01001") +list(self.getBinLogicOper2(data[1],data[2],data[3]))
+
                     self.setCode(code)
-                if cmd == "MEMmul":
-                    code = code + list("01010") + list(str(self.getBinNumArgs(data[1])))
+                if cmd == "MULmem":
+                    code = code + list("01010") +list(self.getBinLogicOper2(data[1],data[2],data[3]))
+
                     self.setCode(code)
-                if cmd == "MEMdiv":
-                    code = code + list("01011") + list(str(self.getBinNumArgs(data[1])))
+                if cmd == "DIVmem":
+                    code = code + list("01011") +list(self.getBinLogicOper2(data[1],data[2],data[3]))
+
                     self.setCode(list(map(int,code)))
                 if cmd == "PUSH":
                     dest = str(bin(int(data[1]))[2:])
@@ -225,6 +245,10 @@ class Instruction:
                         c = c+1
                     code = code + list("10100")+list(dest)+list(arg)
                     self.setCode(code)
+                if cmd == "PUTMemResult":
+                    code = code + list("10111") + list(str(self.getBinNumArgs(data[1])))
+                    self.setCode(code)
+
     def resetCursor(self):
         self.cursor = 0
     def generateRandomCode(self,bits=32):

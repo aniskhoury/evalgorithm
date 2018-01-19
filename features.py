@@ -133,6 +133,11 @@ def getRandomWords(num,listWords):
         newList.append(listWords[number])
         listWords.pop(number)
     return newList
+
+
+
+#########################
+## eXEMPLES VECTOR
 prepareVector(prepareSampleCat("recobreix"))
 prepareVector(prepareSampleCat("desviï"))
 prepareVector(prepareSampleCat("abat"))

@@ -63,8 +63,11 @@ class EVA:
         iosim = self.getConfig().getIO()
         popu = self.getPopulation()
         fitness = 0.0
+        #Loop all criatures and simulate it, one by one for save
+        #the memory and state of execution.
+        #Then we pass the parameters to fitness function
         for element in range(len(popu.getElements())):
-            #Algorithm was stored in elementPopulation
+            #Algorithm of criature was stored in elementPopulation
             algo = self.getPopulation().getElements()[element].getAlgorithm()
             virMachine.loadAlgorithm(algo)
             fitness = 0.0
@@ -80,10 +83,11 @@ class EVA:
                 param["resultExpected"] =  iosim.getResult()[c]
                 param["outputExpected"] =  iosim.getOutput()[c]
                 param["input"] = i
-
                 param["output"] =  str(self.getVirtualMachines()[0].getOutput())
                 param["resultVir"] =  float(self.getVirtualMachines()[0].getResult())
                 param["algorithm"] = algo
+
+
                 c = c+1
 
                 temp= self.fnFitness(param)

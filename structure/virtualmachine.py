@@ -29,6 +29,7 @@ class VirtualMachine:
         self.codeFunction["10010"] = self.notMemFunction
         self.codeFunction["10011"] = self.orMemFunction
         self.codeFunction["10100"] = self.putMemArg
+        self.codeFunction["10111"] = self.putMemResult
 
 
 
@@ -140,9 +141,12 @@ class VirtualMachine:
         number = int(self.binToDec(number))
         return number
 
-    def readMemValues(self,i):
-        return int(i.readNextBits(27),2)
+    def readMemValues(self,instruction):
+        memDest = int(instruction.readNextBits(9),2)
+        memGate1 = int(instruction.readNextBits(9),2)
+        memGate2 = int(instruction.readNextBits(9),2)
 
+        return memDest,memGate1,memGate2
     def logicGate2Input(self,instruction):
         memDest = int(instruction.readNextBits(9),2)
         memGate1 = int(instruction.readNextBits(9),2)
@@ -163,6 +167,7 @@ class VirtualMachine:
     def addInmFunction(self,instruction,input):
         res = self.getResult()
         number = self.readInmediateInmArgs(instruction,input)
+
         self.setResult(res+number)
         return True
 
@@ -230,37 +235,38 @@ class VirtualMachine:
         return True
 
     def divMemFunction(self, instruction, input):
-        res = self.getResult()
-        index = self.readMemValues(instruction)
+        dest,mem1,mem2 = self.readMemValues(instruction)
         try:
-            self.setResult(res / self.memory[index])
-        except (IndexError,ZeroDivisionError) as e:
+            self.memory[dest] = self.memory[mem1] / self.memory[mem2]
+        except (IndexError, ZeroDivisionError) as e:
             return False
+
         return True
+
+
 
     def mulMemFunction(self,instruction,input):
-        res = self.getResult()
-        index = self.readMemValues(instruction)
+        dest,mem1,mem2 = self.readMemValues(instruction)
         try:
-            self.setResult(res*self.memory[index])
+            self.memory[dest] = self.memory[mem1] * self.memory[mem2]
         except IndexError:
             return False
         return True
+
 
     def subMemFunction(self,instruction,input):
-        res = self.getResult()
-        index = self.readMemValues(instruction)
+        dest,mem1,mem2 = self.readMemValues(instruction)
         try:
-            self.setResult(res-self.memory[index])
+            self.memory[dest] = self.memory[mem1] - self.memory[mem2]
         except IndexError:
             return False
         return True
 
+
     def addMemFunction(self,instruction, input):
-        res = self.getResult()
-        index = self.readMemValues(instruction)
+        dest,mem1,mem2 = self.readMemValues(instruction)
         try:
-            self.setResult(res+self.memory[index])
+            self.memory[dest] = self.memory[mem1] + self.memory[mem2]
         except IndexError:
             return False
         return True
@@ -317,6 +323,14 @@ class VirtualMachine:
             dest = int(instruction.readNextBits(18),2)
             arg = int(instruction.readNextBits(9),2)
             self.memory[dest] = input[arg]
+
+        except IndexError:
+            return False
+        return True
+    def putMemResult(self,instruction,input):
+        try:
+            dest = int(self.binToDec(instruction.readNextBits(27)))
+            self.memory[dest] = self.result
 
         except IndexError:
             return False
