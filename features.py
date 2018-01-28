@@ -48,13 +48,14 @@ def isConsonant(c,vowelList,punctuationList):
 def freqGrafema(word,grafemesList):
     freq = {}
     #inicialitzo la llista de freq. grafemes a 0
-    for grafema in grafemesList:
-        freq[grafema] = 0
-    #es conten
-    for grafema in word:
-        freq[grafema] = freq[grafema]+1
-        print("grafema : ",grafema)
-
+    try:
+        for grafema in grafemesList:
+            freq[grafema] = 0
+        #es conten
+        for grafema in word:
+            freq[grafema] = freq[grafema]+1
+    except KeyError:
+        error = True
     vectorFreq = []
     for grafema in grafemesList:
         vectorFreq.append(freq[grafema])
@@ -89,9 +90,7 @@ def normalizeVectorFeature(vectorF):
     maxFeature = max(vectorF)*1.0
     normalizedVector = [vectorF[nFeature]/maxFeature for nFeature in range(len(vectorF)) ]
     return normalizedVector
-paraula = "l'Anïs"
-paraula = filterText(paraula,grafemes)
-vectorF = generateVectorFeatureWord(paraula,vowelList,punctuationList,grafemes)
+
 
 def generateAllVectorFeature(text,vowelList,punctuationList,grafemes):
     vectorFeatures = []
@@ -103,6 +102,9 @@ def generateAllVectorFeature(text,vowelList,punctuationList,grafemes):
             vectorFNormalied = normalizeVectorFeature(vectorF)
             vectorFeatures.append(vectorFNormalied)
     return vectorFeatures
-text = "hola que tAl"
-print(generateAllVectorFeature(text,vowelList,punctuationList,grafemes))
-exit()
+
+
+# paraula = "l'Anïs"
+# paraula = filterText(paraula,grafemes)
+# vectorF = generateVectorFeatureWord(paraula,vowelList,punctuationList,grafemes)
+# print(generateAllVectorFeature(text,vowelList,punctuationList,grafemes))

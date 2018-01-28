@@ -49,7 +49,7 @@ class EVA:
         # fer la comprovacio desitjada
         diffSqrt = math.sqrt(simResult ** 2 - result ** 2) ** 2
         return 1 / (1 + diffSqrt)
-    def createVirtualMachine(self,n=1,memory=64):
+    def createVirtualMachine(self,n=1,memory=150):
         for i in range(n):
             self.virtualMachines.append(VirtualMachine(memory))
     def getVirtualMachines(self):
@@ -139,6 +139,7 @@ class EVA:
         return self.getPopulation().getElements()[0]
     def run(self,success=0.7,mutationProb=2):
         for generation in range(self.getConfig().getNumGenerations()):
+            self.nextPopulation(mutationProb=mutationProb)
             self.setCurrentGen(generation)
             print("Starting generation ",self.getCurrentGen())
             self.runSimAllAlgorithm(success=success)
@@ -151,8 +152,10 @@ class EVA:
             if self.getBest().getScore() >=success:
                 print("Found solution with score",self.getBest().getScore())
                 return self.getBest().getAlgorithm()
-            self.nextPopulation(mutationProb=mutationProb)
-            #choose accurate fitness value and stop if it pass
+        self.orderPopu()
+        print("Max generation reached. Return solution with success ",self.getBest().getScore())
+        return self.getBest().getAlgorithm()
+
     def setCurrentGen(self,s):
         self.currentGen = s
     def getCurrentGen(self):

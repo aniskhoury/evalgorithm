@@ -70,8 +70,9 @@ class VirtualMachine:
         #load and process all instructions of algorithm
         instruction = self.getNextInstruction()
         while instruction != False:
-            if self.computeInstruction(instruction,input) == False:
-                return False
+            # if self.computeInstruction(instruction,input) == False:
+            #     return False
+            self.computeInstruction(instruction,input)
             instruction = self.getNextInstruction()
 
         return True
