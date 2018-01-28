@@ -1,6 +1,9 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 import itertools
 import random
+import string
+
 english = "Directed evolution is a method used in protein engineering that mimics the process of natural selection to evolve proteins or nucleic acids toward a user-defined goal. It consists of subjecting a gene to iterative rounds of mutagenesis (creating a library of variants), selection (expressing the variants and isolating members with the desired function), and amplification (generating a template for the next round). It can be performed in vivo (in living cells), or in vitro (free in solution or microdroplet). Directed evolution is used both for protein engineering as an alternative to rationally designing modified proteins, as well as studies of fundamental evolutionary principles in a controlled, laboratory environment. Combined, 'semi-rational' approaches are being investigated to address the limitations of both rational design and directed evolution. Beneficial mutations are rare, so large numbers of random mutants have to be screened to find improved variants. 'Focussed libraries' concentrate on randomising regions thought to be richer in beneficial mutations for the mutagenesis step of DE. A focussed library contains fewer variants than a traditional random mutagenesis library and so does not require such high-throughput screening. These gas-like ions rapidly interact with ions of opposite charge to give neutral molecules or ionic salts. Ions are also produced in the liquid or solid state when salts interact with solvents (for example, water) to produce solvated ions, which are more stable, for reasons involving a combination of energy and entropy changes as the ions move away from each other to interact with the liquid. These stabilized species are more commonly found in the environment at low temperatures. A common example is the ions present in seawater, which are derived from the dissolved salts."
 
 
@@ -8,140 +11,98 @@ catala = "L'evolució dirigida és un mètode utilitzat en l'enginyeria de prote
 
 
 
-def prepareSampleCat(s):
-    result = s.lower()
+diccionariCatala = open("paraulescatala.txt").read()
+diccionariCastella = open("paraulescastella.txt").read()
+diccionariAngles = open("english.txt").read()
 
-    listOriginal = ["à", "è", "ì", "ò", "ù", "ü", "ï", "á", "é", "í", "ó", "ú", "/", "(", ")", ":", ".", ",", "-", "·",'’','\'']
-    listResulted = ["a", "e", "i", "o", "u", "u", "i", "a", "e", "i", "o", "u", "", "", "", "", "", "", "", "","",""]
-    for i in range(len(listOriginal)):
-        result = result.replace(listOriginal[i], listResulted[i])
 
+
+
+
+grafemes = string.ascii_lowercase+"çñ'-·àáèéìíòóùúäëïöü".decode('utf-8')
+vowelList = "aeiouáéíóúàèìòùäëïöü".decode('utf-8')
+punctuationList = "'·".decode('utf-8')
+def filterText(text,grafemes):
+    filteredText = text.decode('utf-8')
+    filteredText = filteredText.lower()
+    result = ""
+    for grafema in filteredText:
+        if grafema in grafemes:
+            result = result + grafema
     return result
-
-
-
-def prepareSampleEn(s):
-    result = s.lower()
-
-    listOriginal = ["/", "(", ")", ":", ".", ",", "-", "·"]
-    listResulted = ["", "", "", "", "", "", "", ""]
-    for i in range(len(listOriginal)):
-        result.replace(listOriginal[i], listResulted[i])
-
-    return result
-
-
-def isVowel(a):
-    return a in ['a', 'e', 'i', 'o', 'u']
-
-
-def isConstant(a):
-    return not isVowel(a)
-
-
-def checkVowels(vector, numVowels):
-    c = 0
-    num = 0
-    try:
-        while c < len(vector):
-            if vector[c].isalpha():
-                if isVowel(vector[c]) == False:
-                    return False
-            else:
-                return False
-            c = c + 1
-    except IndexError:
+def isVowel(c,vowelList):
+    if c in vowelList:
+        return True
+    return False
+def isPunctuation(c,punctuationList):
+    if c in punctuationList:
+        return True
+    return False
+def isConsonant(c,vowelList,punctuationList):
+    if isVowel(c,vowelList):
+        return False
+    if isPunctuation(c,punctuationList):
         return False
     return True
-def getMax(vector,indexFeature):
-    return float(max(vector[:][indexFeature]))
-def normalize(vector):
-    col = len(vector[0])
-    maxValues = [getMax(vector,i) for i in range(13)]
-    maxValues.append(1)
-    for i in range(len(vector)):
-        for j in range(col):
-            vector[i][j] = vector[i][j]/maxValues[j]
 
-def getFeatures(vector, lang):
-    features = []
-    # get desided feature from i word
-    for word in vector:
+def freqGrafema(word,grafemesList):
+    freq = {}
+    #inicialitzo la llista de freq. grafemes a 0
+    for grafema in grafemesList:
+        freq[grafema] = 0
+    #es conten
+    for grafema in word:
+        freq[grafema] = freq[grafema]+1
+        print("grafema : ",grafema)
 
-        nVowels = [0, 0, 0]
-        nConsonants = [0, 0, 0]
-        #Num. of coincidences of a,e,i,o,u stored in this order
-        vowelsCount = [word.count('a'),word.count('e'),word.count('i')]
-        vowelsCount = vowelsCount + [word.count('o'),word.count('u')]
-        nCharacters = len(word)
-        startWordVowel = 0
+    vectorFreq = []
+    for grafema in grafemesList:
+        vectorFreq.append(freq[grafema])
+    return vectorFreq
+def numVowels(word,vowelList):
+    c = 0
+    for grafema in word:
+        c = c + isVowel(grafema,vowelList)
+    return c
+def numConsonants(word,vowelList,punctuationList):
+    c = 0
+    for grafema in word:
+        c = c + isConsonant(grafema,vowelList,punctuationList)
+    return c
+def numPunctuations(word,punctuationList):
+    c = 0
+    for grafema in word:
+        c = c + isPunctuation(grafema,punctuationList)
+    return c
+def generateVectorFeatureWord(word,vowelList,punctuationList,grafemes):
+    vectorFeature = freqGrafema(word,grafemes)
+    #add freq vowels feature
+    vectorFeature.append(numVowels(word,vowelList))
+    #add freq consonants feature
+    vectorFeature.append(numConsonants(word,vowelList,punctuationList))
+    # add freq punctation feature
+    vectorFeature.append(numPunctuations(word, punctuationList))
+    #add lenght word feature
+    vectorFeature.append(len(word))
+    return vectorFeature
+def normalizeVectorFeature(vectorF):
+    maxFeature = max(vectorF)*1.0
+    normalizedVector = [vectorF[nFeature]/maxFeature for nFeature in range(len(vectorF)) ]
+    return normalizedVector
+paraula = "l'Anïs"
+paraula = filterText(paraula,grafemes)
+vectorF = generateVectorFeatureWord(paraula,vowelList,punctuationList,grafemes)
 
-        if isVowel(word[0]):
-            startWordVowel = 1
-
-        c = 0
-        # calculate Vowels and Consonants together and store values
-        # in array of numbers. nConsonants[0] is the number of consonants
-        # alone. nConsonants[1] the coincidence of two consonants, etc
-        vowelVector = ''.join([str(int(isVowel(i))) for i in word])
-        consonantVecor = ''.join([str(int(isConstant(i))) for i in word])
-        nVowels = [vowelVector.count("1"), vowelVector.count("11"), vowelVector.count("111")]
-        nConsonants = [consonantVecor.count("1"), consonantVecor.count("11"), consonantVecor.count("111")]
-
-        row = [nCharacters, startWordVowel, nVowels[0], nVowels[1], nVowels[2], nConsonants[0], nConsonants[1],
-               nConsonants[2]]
-        row = row + vowelsCount + [lang]
-        features.append(row)
-    return features
-
-#List of features:
-#row = [nCharacters, startWordVowel, nVowels[0], nVowels[1], nVowels[2], nConsonants[0], nConsonants[1],
-#               nConsonants[2], lang]
-def getAllFeatures():
-    features = getFeatures(prepareSampleCat(catala).split(), 0)
-    features += getFeatures(prepareSampleEn(english).split(), 1)
-    normalize(features)
-    return features
-
-#suposa tamany maxim paraula de 20
-def featureVector(word):
-    featureV = [0]*20
-
-    for position in range(len(word)):
-        #97 is the ascii number "a"
-        featureV[position] = ord(word[position])-96
-    return featureV
-def prepareVector(text):
-    textFiltered = prepareSampleCat(text)
-    #get max value of all vector feature words of text
-    maxValue = max([max(featureVector(word)) for word in textFiltered.split()])*1.0
-    vectorOfText = []
-    for word in textFiltered.split():
-        normalizedVector = [x / maxValue for x in featureVector(word)]
-        print "Paraula ",word
-        print "Sense normalitzar ",featureVector(word)
-        print "Normalitzacio ", normalizedVector
-        vectorOfText.append(normalizedVector)
-    return vectorOfText
-
-
-c = prepareSampleCat(open("paraulescatala.txt").read()).split()
-def getRandomWords(num,listWords):
-    newList = []
-    for i in range(num):
-        number = random.randint(0,len(listWords)-1)
-        newList.append(listWords[number])
-        listWords.pop(number)
-    return newList
-
-
-
-#########################
-## eXEMPLES VECTOR
-prepareVector(prepareSampleCat("recobreix"))
-prepareVector(prepareSampleCat("desviï"))
-prepareVector(prepareSampleCat("abat"))
-prepareVector(prepareSampleCat("estiressim"))
-prepareVector(prepareSampleCat("mare"))
-
-#prepareVector("En biologia, l’evolució és el procés de canvi en els trets heretats d’una població d’organismes entre una generació i la següent")
+def generateAllVectorFeature(text,vowelList,punctuationList,grafemes):
+    vectorFeatures = []
+    words = text.split()
+    for word in words:
+        wordClean = filterText(word,grafemes)
+        if wordClean != "":
+            vectorF = generateVectorFeatureWord(wordClean, vowelList, punctuationList, grafemes)
+            vectorFNormalied = normalizeVectorFeature(vectorF)
+            vectorFeatures.append(vectorFNormalied)
+    return vectorFeatures
+text = "hola que tAl"
+print(generateAllVectorFeature(text,vowelList,punctuationList,grafemes))
+exit()

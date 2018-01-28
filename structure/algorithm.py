@@ -29,7 +29,7 @@ class Algorithm:
 
     def algoToASM(self):
         for instruction in self.getInstructions():
-            print instruction.toASM()
+            print(instruction.toASM())
     def addInstruction(self,i):
         self.getInstructions().append(i)
     def copyBitInstructionWithMut(self,bitA,bitB,probMut):
@@ -52,16 +52,16 @@ class Algorithm:
                 #add new bit
                 res = res+str(random.randint(0,1))
         return res
-    def crossInstruction(self,i1,i2):
+    def crossInstruction(self,i1,i2,mutationProb=2):
         maxBits = i1.getMaxLenghtBits()
         codeRes = ""
         #mutation prob
-        prob = 1
+
         if maxBits > 32:
             maxBits = 32
         try:
             for i in range(maxBits):
-                codeRes = codeRes + self.copyBitInstructionWithMut(i1.getCode()[i],i2.getCode()[i],prob)
+                codeRes = codeRes + self.copyBitInstructionWithMut(i1.getCode()[i],i2.getCode()[i],mutationProb)
         except IndexError:
             for i in range(32):
                 codeRes = codeRes + str(random.randint(0, 1))
@@ -76,7 +76,7 @@ class Algorithm:
         i = Instruction()
         i.setCode(codeRes)
         return i
-    def cross(self,b):
+    def cross(self,b,mutationProb=2):
         a = self
         numInstructionsA = len(self.getInstructions())
         numInstructionsB = len(b.getInstructions())
@@ -85,11 +85,11 @@ class Algorithm:
         newAlgorithm = Algorithm(instructions="empty")
         c = 0
         while c < len(b.getInstructions()):
-            newAlgorithm.addInstruction(self.crossInstruction(a.getInstructions()[c], b.getInstructions()[c]))
+            newAlgorithm.addInstruction(self.crossInstruction(a.getInstructions()[c], b.getInstructions()[c],mutationProb))
             c = c +1
         #check if there are more instructions in a algorithm and b algorithm not
         if c < len(a.getInstructions()):
             while c < len(a.getInstructions()):
-                newAlgorithm.addInstruction(self.crossInstruction(a.getInstructions()[c], a.getInstructions()[c]))
+                newAlgorithm.addInstruction(self.crossInstruction(a.getInstructions()[c], a.getInstructions()[c],mutationProb))
                 c = c + 1
         return newAlgorithm

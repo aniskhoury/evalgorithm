@@ -155,7 +155,7 @@ class Instruction:
     def getBinLogicOper1(self,dest, mem1):
         res = str(bin(int(dest))[2:])
         res1 = str(bin(int(mem1))[2:])
-        return self.paddLen(res,9)+self.paddLen(res1,9)
+        return self.paddLen(res,9)+self.paddLen(res1,18)
 
 
     def generateCode(self,s):

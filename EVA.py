@@ -102,7 +102,7 @@ class EVA:
         print("Best:")
         #self.getPopulation().getElements()[0].showElement()
         print("Code ASM")
-        print self.getBest().algoToASM()
+        print(self.getBest().algoToASM())
     def showAllPopulation(self):
         print("#################################")
         print("######## Show Population ########")
@@ -121,8 +121,8 @@ class EVA:
         popu = self.getPopulation().getElements()
         for i in popu:
             i.getAlgorithm().algoToASM()
-            print "score---->",i.getScore()
-    def nextPopulation(self):
+            print("score---->",i.getScore())
+    def nextPopulation(self,mutationProb=2):
         oldPopu = self.getPopulation().getElements()
 
         popu = Population()
@@ -132,12 +132,12 @@ class EVA:
         for i in range(numAlgorithms-1):
             indexAlgo1 = random.randint(0,numAlgorithms-1)
             indexAlgo2 = random.randint(0,numAlgorithms-1)
-            child = oldPopu[0].getAlgorithm().cross(oldPopu[indexAlgo2].getAlgorithm())
+            child = oldPopu[0].getAlgorithm().cross(oldPopu[indexAlgo2].getAlgorithm(),mutationProb=mutationProb)
             popu.addElementPopu(elementPopulation(algorithm=child))
         self.setPopulation(popu)
     def getBest(self):
         return self.getPopulation().getElements()[0]
-    def run(self,success=0.7):
+    def run(self,success=0.7,mutationProb=2):
         for generation in range(self.getConfig().getNumGenerations()):
             self.setCurrentGen(generation)
             print("Starting generation ",self.getCurrentGen())
@@ -151,7 +151,7 @@ class EVA:
             if self.getBest().getScore() >=success:
                 print("Found solution with score",self.getBest().getScore())
                 return self.getBest().getAlgorithm()
-            self.nextPopulation()
+            self.nextPopulation(mutationProb=mutationProb)
             #choose accurate fitness value and stop if it pass
     def setCurrentGen(self,s):
         self.currentGen = s
