@@ -33,16 +33,16 @@ def myFitness(param):
 
     while c < 3:
             #s'aplica el sumatori de x*w-b
-            prediccio = prediccio + float(mem[c] * x[c] + b)
+            prediccio = prediccio + (float("0."+str(mem[c])) * x[c] + b)
             c += 1
 
     #El cas de "te taquicardia"
     if result == 1:
-        if prediccio < 1: #la prediccio ha encertat que te taquicardia?
+        if prediccio > 1: #la prediccio ha encertat que te taquicardia?
             return 1
     #cas no te taquicardia
     else:
-        if prediccio > 1: #la prediccio ha encertat que no te taquicardia?
+        if prediccio < 1: #la prediccio ha encertat que no te taquicardia?
             return 1
     return 0
 
@@ -105,7 +105,7 @@ def dataTraining(N=200):
 
 training = IO()
 #Dades d'entrenament. Taula de la veritat operació Suma amb Carry
-vEntrenament = dataTraining(N=300)
+vEntrenament = dataTraining(N=120)
 
 for i in vEntrenament:
     training.addTest([i[0],i[1],i[2]],"",i[3])
@@ -115,5 +115,5 @@ for i in vEntrenament:
 
 configuration = EVAconfig(training, numGenerations=500000, numVirtualMachines=1, typeCross=0, population=50)
 simulation = EVA(configuration, fnFitness=myFitness,population=None,funcSkeleton=mySkeleton)
-algorithm = simulation.run(success=1.0,mutationProb=5)
+algorithm = simulation.run(success=1.0,mutationProb=8)
 algorithm.algoToASM()
