@@ -84,16 +84,16 @@ for element in castellaFeatureVector:
 for element in castellaFeatureVector:
     io.addTest(element,"",0)
 
-configuration = EVAconfig(io, numGenerations=2, numVirtualMachines=1, typeCross=0, population=25)
+configuration = EVAconfig(io, numGenerations=5, numVirtualMachines=1, typeCross=0, population=25)
 simulation = EVA(configuration, fnFitness=myFitness,population=None,funcSkeleton=mySkeleton)
-#algorithm = simulation.run(success=0.90,mutationProb=8)
-#algorithm.algoToASM()
-#VM = VirtualMachine(128)
-#VM.loadAlgorithm(algorithm)
+algorithm = simulation.run(success=0.90,mutationProb=8)
+algorithm.algoToASM()
+VM = VirtualMachine(128)
+VM.loadAlgorithm(algorithm)
 #run without parameters
-#VM.runAlgorithm([])
-#print(VM.getMemory())
-#weights = getVectorCriature(VM.getMemory(),50)
+VM.runAlgorithm([])
+print(VM.getMemory())
+weights = getVectorCriature(VM.getMemory(),50)
 weights = [0, 0, 0, 0, 0, 264, 8126, 4970, 1783, 2612, 1928, 6373, 0, 0, 0, 1383, 0, 5294, 6405, 0, 0, 0, 0, 0, 1067, 7187, 0, 4142, 6744, 6092, 1701, 3110, 2026, 2016, 2120, 7891, 0, 0, 0, 0, 0, 0, 3536, 4277, 0, 0, 4746, 615, 0, 0, 0, 0, 248, 0, 0, 0, 1398, 0, 0, 0, 7383, 0, 0, 4319, 0, 7294, 0, 1151, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7487, 0, 1099, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0][0:50]
 
 def testWord(vectorW,x,grafemes,vowelList,punctuationList):
@@ -116,10 +116,10 @@ def testText(vectorW,words,grafemes,vowelList,punctuationList):
             numWordCat = numWordCat+1
         else:
             numWordNoCat = numWordNoCat+1
-        print(result)
-    print("Text en català")
+
     print("Numeros paraules detectades en catala",numWordCat)
     print("Numeros paraules no detectades en catala",numWordNoCat)
+    return numWordCat,numWordNoCat
 
 text = "como estais todos espero que muy bien gracias y un saludo"
 words = text.split()

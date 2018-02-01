@@ -38,11 +38,11 @@ def myFitness(param):
 
     #El cas de "te taquicardia"
     if result == 1:
-        if prediccio > 1: #la prediccio ha encertat que te taquicardia?
+        if prediccio < 1: #la prediccio ha encertat que te taquicardia?
             return 1
     #cas no te taquicardia
     else:
-        if prediccio < 1: #la prediccio ha encertat que no te taquicardia?
+        if prediccio > 1: #la prediccio ha encertat que no te taquicardia?
             return 1
     return 0
 

@@ -149,7 +149,8 @@ class EVA:
             bestScore = self.getBest().getScore()
             self.runSimAllAlgorithm(success=success)
             print("Actual best score:", self.getBest().getScore())
-            self.getBest().getAlgorithm().algoToASM()
+            #Imprimir en cada generacio la millor criatura
+            #self.getBest().getAlgorithm().algoToASM()
             if self.getBest().getScore() >=success:
                 print("Found solution with score",self.getBest().getScore())
                 return self.getBest().getAlgorithm()

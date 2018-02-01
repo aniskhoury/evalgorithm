@@ -7,12 +7,12 @@ from structure.io import *
 from features import *
 from structure.virtualmachine import *
 def mySkeleton():
-    ins = [Instruction() for i in range(5)]
+    ins = [Instruction() for i in range(4)]
 
     ins[0].generateCode("PUTmemarg 5 1")
     ins[1].generateCode("PUTmemarg 6 0")
-    ins[2].generateCode("ANDmem 0 5 20")
-    ins[3].generateCode("XORmem 1 5 6")
+    ins[2].generateCode("ANDmem 0 5 6")
+    ins[3].generateCode("XORmem 1 5 20")
 
     result = Algorithm(instructions=ins)
     return result
