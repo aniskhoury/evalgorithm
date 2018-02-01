@@ -1,6 +1,4 @@
-import logging
 class VirtualMachine:
-    global debug
     memory = None
     algorithm = None
     pc = -1 #program counter

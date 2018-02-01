@@ -7,12 +7,12 @@ from structure.io import *
 from features import *
 from structure.virtualmachine import *
 def mySkeleton():
-    ins = [Instruction() for i in range(4)]
+    ins = [Instruction() for i in range(5)]
 
-    ins[0].generateCode("PUTmemarg 0 1")
-    ins[1].generateCode("PUTmemarg 1 0")
-    ins[2].generateCode("ANDmem 2 1 0")
-    ins[3].generateCode("NOTmem 2 4")
+    ins[0].generateCode("PUTmemarg 5 1")
+    ins[1].generateCode("PUTmemarg 6 0")
+    ins[2].generateCode("ANDmem 0 5 20")
+    ins[3].generateCode("XORmem 1 5 6")
 
     result = Algorithm(instructions=ins)
     return result
@@ -61,35 +61,30 @@ def normalize(vector):
         for j in range(col):
             vector[i][j] = vector[i][j]/maxValues[j]
 
-io = IO()
+
 def fitCircuit(param):
-    mem = param["mem"]
-    input = param["input"]
-    result = param["resultExpected"]
-    #print mem,result,input
-    #print type(mem[2]),type(result)
-    if mem[2] == result:  # el resultat de 0x0002 correspon a la Y de la taula veritat?
+    memoria = param["mem"]
+    sortidaEsperada = param["resultExpected"]
+
+    if (memoria[0] == sortidaEsperada[0]) and (memoria[1] == sortidaEsperada[1]):
         return 1  # El resultat esperat es equivalent al trobat per l’algorisme
     return 0  # El resultat de la simulació de l’algorisme no coincideix amb la Y esperada
 
 
-#for i in getAllFeatures():
-#    io.addTest(i[:-1], "", i[8])
-#poblacio 0-> alt i gras
-#poblacio 1-> alt i prim
-#poblacio 2-> baix i gordo
-#poblacio 3-> baix i prim
-
-
-#io.addTest([20,5,6,8],"",20)
-io.addTest([0,0],"",1)
-io.addTest([0,1],"",1)
-io.addTest([1,0],"",1)
-io.addTest([1,1],"",0)
+training = IO()
+#Dades d'entrenament. Taula de la veritat operació Suma amb Carry
+training.addTest([0,0],"",[0,0])
+training.addTest([0,1],"",[0,1])
+training.addTest([1,0],"",[0,1])
+training.addTest([1,1],"",[1,0])
 
 
 
-configuration = EVAconfig(io, numGenerations=800, numVirtualMachines=1, typeCross=0, population=500)
+configuration = EVAconfig(training, numGenerations=500000, numVirtualMachines=1, typeCross=0, population=50)
 simulation = EVA(configuration, fnFitness=fitCircuit,population=None,funcSkeleton=mySkeleton)
-algorithm = simulation.run(success=0.9)
+algorithm = simulation.run(success=0.9,mutationProb=5)
 algorithm.algoToASM()
+
+
+
+

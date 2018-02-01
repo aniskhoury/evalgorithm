@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-DEBUG = False
 
 from EVA import *
 from structure.io import *
@@ -41,8 +40,10 @@ def myFitness(param):
         #    sumVector = sumVector + ((mem[w*2]/mem[(w*2)+1])*x[w])
 
         #cas grup x*pes >=1
+        #print("sumVector",sumVector)
+        #print("result",result)
         if result == 1:
-            if sumVector >=0.5:
+            if sumVector >=1:
                 return 1
             return 0
         else:
@@ -83,34 +84,33 @@ for element in castellaFeatureVector:
 for element in castellaFeatureVector:
     io.addTest(element,"",0)
 
-configuration = EVAconfig(io, numGenerations=200, numVirtualMachines=1, typeCross=0, population=30)
+configuration = EVAconfig(io, numGenerations=2, numVirtualMachines=1, typeCross=0, population=25)
 simulation = EVA(configuration, fnFitness=myFitness,population=None,funcSkeleton=mySkeleton)
-algorithm = simulation.run(success=1.0,mutationProb=5)
+#algorithm = simulation.run(success=0.90,mutationProb=8)
 #algorithm.algoToASM()
-VM = VirtualMachine(128)
-VM.loadAlgorithm(algorithm)
+#VM = VirtualMachine(128)
+#VM.loadAlgorithm(algorithm)
 #run without parameters
-VM.runAlgorithm([])
-print(VM.getMemory())
+#VM.runAlgorithm([])
+#print(VM.getMemory())
 #weights = getVectorCriature(VM.getMemory(),50)
-weights = [0, 0, 0, 0, 0, 264, 8126, 4970, 1783, 2612, 1928, 6373, 0, 0, 0, 1383, 0, 5294, 6405, 0, 0, 0, 0, 0, 1067, 7187, 0, 4142, 6744, 6092, 1701, 3110, 2026, 2016, 2120, 7891, 0, 0, 0, 0, 0, 0, 3536, 4277, 0, 0, 4746, 615, 0, 0, 0, 0, 248, 0, 0, 0, 1398, 0, 0, 0, 7383, 0, 0, 4319, 0, 7294, 0, 1151, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7487, 0, 1099, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+weights = [0, 0, 0, 0, 0, 264, 8126, 4970, 1783, 2612, 1928, 6373, 0, 0, 0, 1383, 0, 5294, 6405, 0, 0, 0, 0, 0, 1067, 7187, 0, 4142, 6744, 6092, 1701, 3110, 2026, 2016, 2120, 7891, 0, 0, 0, 0, 0, 0, 3536, 4277, 0, 0, 4746, 615, 0, 0, 0, 0, 248, 0, 0, 0, 1398, 0, 0, 0, 7383, 0, 0, 4319, 0, 7294, 0, 1151, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7487, 0, 1099, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0][0:50]
 
 def testWord(vectorW,x,grafemes,vowelList,punctuationList):
 
     sumVector = 0.0
 
     for w in range(len(vectorW)):
-        sumVector = sumVector + (vectorW[w] * x[w])
+        sumVector = sumVector + (float("0."+str(vectorW[w])) * x[w])
     return sumVector
-def testText(vectorW,text,grafemes,vowelList,punctuationList):
-    t = text.split()
+def testText(vectorW,words,grafemes,vowelList,punctuationList):
 
     numWordCat = 0
     numWordNoCat = 0
-    print(t)
-    for nWord in range(len(t)):
-        x = generateVectorFeatureWord(t[nWord], vowelList, punctuationList, grafemes)
+    for word in words:
+        x = generateVectorFeatureWord(word, vowelList, punctuationList, grafemes)
         x = normalizeVectorFeature(x)
+
         result = testWord(vectorW,x, vowelList, punctuationList, grafemes)
         if result >=1:
             numWordCat = numWordCat+1
@@ -121,12 +121,15 @@ def testText(vectorW,text,grafemes,vowelList,punctuationList):
     print("Numeros paraules detectades en catala",numWordCat)
     print("Numeros paraules no detectades en catala",numWordNoCat)
 
-text = "L'univers és la totalitat del continu espaitemps en què es troba la humanitat, juntament amb tota la matèria i energia que conté. A gran escala, és l'objecte d'estudi de la cosmologia, que es basa en la física i l'astronomia, tot i que alguns dels temes d'estudi voregen la metafísica. Actualment, els experts no estan d'acord sobre si és possible (en principi) d'arribar a observar la totalitat de l'univers.".decode('utf-8').replace(" ","")
+text = "como estais todos espero que muy bien gracias y un saludo"
+words = text.split()
+words = [filterText(word,grafemes) for word in words]
+
 #x = generateVectorFeatureWord(text, vowelList, punctuationList, grafemes)
 
 #result = testWord(weights,x, vowelList, punctuationList, grafemes)
 
 #text = "hola como estais yo muy bien espero que vosotros también".decode('utf-8')
 
-testText(weights,text,grafemes,vowelList,punctuationList)
+testText(weights,words,grafemes,vowelList,punctuationList)
 

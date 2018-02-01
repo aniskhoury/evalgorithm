@@ -12,6 +12,15 @@ ins[1].generateCode("PUTmemarg 1 1")
 ins[2].generateCode("ANDmem 2 1 0")
 ins[3].generateCode("NOTmem 3 0")
 
+training = IO()
+
+#Taula de la veritat de l'operació NAND
+training.addTest([0,0],"",1)
+training.addTest([0,1],"",1)
+training.addTest([1,0],"",1)
+training.addTest([1,1],"",0)
+
+
 
 
 algo = Algorithm(instructions=ins)
